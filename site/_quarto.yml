@@ -1,0 +1,70 @@
+project:
+  type: website
+  output-dir: _site
+  resources:
+    - data/**
+
+website:
+  title: "Digital WDN · IIT Bombay"
+  description: >-
+    An ontology-driven digital twin of the IIT Bombay water distribution
+    network: CAD to EPANET to optimal sensor placement to a queryable
+    OWL knowledge graph.
+  site-url: "https://manishbilore.github.io/wdn-digital-twin/"
+  repo-url: "https://github.com/manishbilore/wdn-digital-twin"
+  repo-actions: [source, issue]
+  favicon: assets/favicon.svg
+  open-graph: true
+  navbar:
+    background: light
+    logo: assets/favicon.svg
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: 01-source-data.qmd
+        text: Source data
+      - href: 02-hydraulic-model.qmd
+        text: Hydraulic model
+      - href: 03-sensor-placement.qmd
+        text: Sensor placement
+      - href: 04-iot-node.qmd
+        text: IoT node
+      - href: 05-ontology.qmd
+        text: Ontology
+      - href: 06-knowledge-graph.qmd
+        text: Knowledge graph
+      - text: "Explorer"
+        href: 07-explorer.qmd
+      - href: 08-reproduce.qmd
+        text: Reproduce
+    right:
+      - icon: github
+        href: https://github.com/manishbilore/wdn-digital-twin
+  page-footer:
+    left: |
+      Network digitised from an IIT Bombay ESTATE office AutoCAD drawing.
+      Code MIT · data and ontology CC BY 4.0.
+    right: |
+      Built with [Quarto](https://quarto.org). Basemap © Esri.
+
+format:
+  html:
+    theme:
+      - cosmo
+      - assets/custom.scss
+    css: assets/styles.css
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    code-copy: true
+    fig-align: center
+    link-external-newwindow: true
+    include-in-header:
+      - text: |
+          <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+execute:
+  freeze: auto
+  warning: false
+  message: false

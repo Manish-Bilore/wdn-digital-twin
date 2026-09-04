@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Quarto
+/_site/
+/site/_site/
+/site/.quarto/
+/site/_freeze/
+.quarto/
+
+# EPANET scratch
+temp.bin
+temp.inp
+temp.rpt
+*.rpt
+
+# GDAL sidecars
+*.gpkg.aux.xml
+
+# Large rasters — document the download instead of versioning them.
+# The DWG stays: it is the provenance for the whole model.
+inputs/*.tif
+
+# OS
+.DS_Store

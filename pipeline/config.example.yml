@@ -1,0 +1,104 @@
+# =============================================================================
+# wdnkit run configuration
+# Every key shown here has a default in wdnkit/config.py - you only need to
+# override what differs. Paths are relative to where you run the scripts.
+# =============================================================================
+
+project:
+  name: iitb                 # used for output filenames
+  crs: EPSG:32643            # or "auto" to take it from the boundary layer
+  output_dir: out
+
+# --- the CAD drawing ---------------------------------------------------------
+cad:
+  path: inputs/Digital_Water.dwg
+  pipe_layers: auto          # or an explicit list: ["Water Supply Line"]
+  annotation_layers: auto    # or ["Water Line Dia Text"]
+  extent_filter: null        # [minx, miny, maxx, maxy] in CAD units, if the
+                             # sheet carries more than one copy of the network
+  keep: largest_cluster      # largest_cluster | all
+
+# --- placing the drawing on the ground ---------------------------------------
+georeference:
+  # identity        - CAD coordinates are already in project.crs
+  # control_points  - RECOMMENDED: two or more surveyed correspondences
+  # fit_to_boundary - coarse centroid/extent fit, gets you started only
+  mode: control_points
+  allow_rotation: true
+  allow_scale: true
+  control_points:
+    - cad:   [1478.8, -398.6]
+      world: [280000.0, 2115000.0]
+    - cad:   [2766.2, 1176.9]
+      world: [281300.0, 2116600.0]
+
+# --- service boundary --------------------------------------------------------
+boundary:
+  path: inputs/campus_boundary.gpkg
+  layer: null
+  buffer_m: 0
+  clip_network: false
+
+# --- terrain -----------------------------------------------------------------
+dem:
+  path: inputs/dem.tif       # any CRS; reprojected on the fly
+  band: 1
+  nodata_fill: idw           # idw | mean | <a number>
+  smooth_window_m: 0         # e.g. 25 to damp 30 m DEM noise between close nodes
+  vertical_offset_m: 0       # e.g. geoid-to-ellipsoid correction
+
+# --- topology cleanup --------------------------------------------------------
+topology:
+  snap_tolerance_m: 0.5
+  prune_dangles_below_m: 7.0
+  bridge_islands: true
+  max_bridge_gap_m: 150.0
+  min_segment_length_m: 0.5
+
+# --- demand ------------------------------------------------------------------
+demand:
+  population: 13429          # single total for the whole service area
+  lpcd: 135                  # CPHEEO institutional norm
+  # total_lpd: 1812915       # give this instead to bypass population x lpcd
+  peak_factor: 2.5
+  allocation: voronoi        # voronoi | pipe_length | uniform
+  unaccounted_for_water: 0.0 # e.g. 0.15 to gross up for 15 % NRW
+
+# --- hydraulics --------------------------------------------------------------
+hydraulics:
+  headloss: H-W
+  default_diameter_mm: 100
+  diameter_ladder_mm: [40, 50, 75, 100, 150, 200, 250, 300, 350, 400]
+  max_velocity_ms: 1.5
+  service_diameter_cap_mm: 50
+  max_label_distance_m: 60   # ignore a CAD label further than this from a pipe
+  roughness_by_material:
+    CI: 100
+    GI: 120
+    DI: 130
+    PVC: 145
+    HDPE: 145
+    MS: 120
+    UNK: 110
+  source:
+    mode: auto_largest_north # auto_largest_north | coordinates | layer
+    # coordinates: [281000.0, 2116500.0]
+    head_mode: min_residual  # min_residual | fixed
+    min_residual_m: 15
+    # fixed_head_m: 95
+
+# --- sensor placement --------------------------------------------------------
+placement:
+  n_clusters: 5
+  random_state: 42
+  min_per_cluster: 5
+  pressure_low_percentile: 20
+  pressure_high_percentile: 80
+  topology_classes: [junction, dead_end]
+
+# --- ontology ----------------------------------------------------------------
+ontology:
+  emit: true
+  namespace: "https://w3id.org/iitb/wdn#"
+  tbox_path: ontology/wdn_sensor_ontology.ttl
+  sensor_suite: [pH, TDS, ORP, DO, Temperature]

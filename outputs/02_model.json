@@ -1,0 +1,40 @@
+{
+  "name": "iitb",
+  "crs": "EPSG:32643",
+  "elevation_source": "dem.tif",
+  "junctions": 275,
+  "pipes": 322,
+  "total_pipe_length_m": 18776.2,
+  "dead_ends": 133,
+  "junction_nodes": 142,
+  "demand": {
+    "basis": "population x lpcd",
+    "population": 13429,
+    "lpcd": 135,
+    "total_lpd": 1812915.0,
+    "avg_day_lps": 20.9828,
+    "allocation": "voronoi",
+    "service_area_source": "boundary within 150 m of a main"
+  },
+  "peak_factor": 2.5,
+  "source_node": "J73",
+  "source_head_m": 111.71,
+  "diameters_from_cad": 167,
+  "diameters_raised": 31,
+  "elevation_m": {
+    "min": 36.71,
+    "median": 49.68,
+    "max": 66.61
+  },
+  "pressure_m": {
+    "min": 15.0,
+    "p20": 33.050000762939455,
+    "median": 39.47999954223633,
+    "p80": 54.08999938964844,
+    "max": 68.2300033569336
+  },
+  "velocity_ms": {
+    "median": 0.16975000500679016,
+    "max": 1.6252000331878662
+  }
+}

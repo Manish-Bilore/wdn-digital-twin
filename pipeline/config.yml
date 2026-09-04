@@ -1,0 +1,81 @@
+# Paths are relative to the PROJECT ROOT - run the pipeline from there:
+#   .venv/bin/python code/run_all.py -c code/config.yml
+
+project:
+  name: iitb
+  crs: EPSG:32643            # UTM 43N covers Mumbai
+  output_dir: outputs
+
+cad:
+  path: "inputs/Digital Water.dwg"
+  pipe_layers: auto
+  annotation_layers: auto
+  extent_filter: [1400, -500, 3000, 2000]   # isolates the clean network copy
+  keep: largest_cluster
+
+georeference:
+  mode: auto_register
+  allow_rotation: false
+  allow_scale: false # CAD units are already metres
+
+boundary:
+  path: inputs/campus_boundary.gpkg
+  layer: null
+  buffer_m: 0
+  clip_network: false
+
+dem:
+  path: inputs/dem.tif
+  band: 1
+  nodata_fill: idw
+  smooth_window_m: 25        # damps 30 m DEM noise between close junctions
+  vertical_offset_m: 0
+
+topology:
+  snap_tolerance_m: 0.5
+  prune_dangles_below_m: 7.0
+  bridge_islands: true
+  max_bridge_gap_m: 150.0
+  min_segment_length_m: 0.5
+
+demand:
+  population: 13429
+  lpcd: 135
+  peak_factor: 2.5
+  allocation: voronoi
+  unaccounted_for_water: 0.0
+  max_service_distance_m: 150
+
+hydraulics:
+  headloss: H-W
+  default_diameter_mm: 100
+  diameter_ladder_mm: [40, 50, 75, 100, 150, 200, 250, 300, 350, 400]
+  max_velocity_ms: 1.5
+  service_diameter_cap_mm: 50
+  max_label_distance_m: 60
+  roughness_by_material:
+    CI: 100
+    GI: 120
+    DI: 130
+    PVC: 145
+    HDPE: 145
+    MS: 120
+    UNK: 110
+  source:
+    mode: auto_largest_north
+    head_mode: min_residual
+    min_residual_m: 15
+
+placement:
+  n_clusters: 5
+  random_state: 42
+  min_per_cluster: 5
+  pressure_low_percentile: 20
+  pressure_high_percentile: 80
+  topology_classes: [junction, dead_end]
+
+ontology:
+  emit: true
+  namespace: "https://w3id.org/iitb/wdn#"
+  tbox_path: code/wdn_sensor_ontology.ttl
+  sensor_suite: [pH, TDS, ORP, DO, Temperature]

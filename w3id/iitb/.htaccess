@@ -1,0 +1,24 @@
+# https://w3id.org/iitb/wdn  ->  ontology-driven WDN digital twin
+# Submit as a PR to https://github.com/perma-id/w3id.org
+#
+# Content negotiation: RDF tools get the ontology, browsers get the docs.
+
+Options +FollowSymLinks
+RewriteEngine on
+
+# Turtle
+RewriteCond %{HTTP_ACCEPT} text/turtle [OR]
+RewriteCond %{HTTP_ACCEPT} application/x-turtle
+RewriteRule ^wdn(\.html|\.ttl|\.owl)?$ https://YOUR_GITHUB_USERNAME.github.io/wdn-digital-twin/data/graph.ttl [R=303,L]
+
+# RDF/XML
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml
+RewriteRule ^wdn(\.html|\.ttl|\.owl)?$ https://YOUR_GITHUB_USERNAME.github.io/wdn-digital-twin/data/ontology.owl [R=303,L]
+
+# explicit extensions win over negotiation
+RewriteRule ^wdn\.ttl$ https://YOUR_GITHUB_USERNAME.github.io/wdn-digital-twin/data/graph.ttl [R=303,L]
+RewriteRule ^wdn\.owl$ https://YOUR_GITHUB_USERNAME.github.io/wdn-digital-twin/data/ontology.owl [R=303,L]
+
+# everything else, including a browser, gets the documentation
+RewriteRule ^wdn(\.html)?$ https://YOUR_GITHUB_USERNAME.github.io/wdn-digital-twin/05-ontology.html [R=303,L]
+RewriteRule ^wdn#(.*)$ https://YOUR_GITHUB_USERNAME.github.io/wdn-digital-twin/05-ontology.html [R=303,L]

@@ -1,0 +1,63 @@
+{
+  "cad_path": "inputs/Digital Water.dwg",
+  "cad_readable": "outputs/Digital Water_cad.gpkg",
+  "crs": "EPSG:32643",
+  "pipe_layers": [
+    "Water Supply Line"
+  ],
+  "annotation_layers": [
+    "Water Line Dia Text"
+  ],
+  "n_lines": 267,
+  "n_annotations": 60,
+  "n_diameter_labels": 50,
+  "n_asset_notes": 11,
+  "transform": [
+    1.0,
+    -0.0,
+    0.0,
+    1.0,
+    278371.3834422049,
+    2116288.5494866674
+  ],
+  "georeference_mode": "auto_register",
+  "registration": {
+    "iou": 0.6854,
+    "centroid_only_iou": 0.509,
+    "translation": [
+      278371.38,
+      2116288.55
+    ],
+    "rotation_deg": 0.0,
+    "scale": 1.0,
+    "sharpness": {
+      "iou_at_25m": 0.6744,
+      "iou_at_50m": 0.6515,
+      "iou_at_100m": 0.5939
+    },
+    "contrast_100m": 0.0915,
+    "converged": true
+  },
+  "control_points_equivalent": [
+    {
+      "cad": [
+        1592.8,
+        1286.5
+      ],
+      "world": [
+        279964.18,
+        2117575.05
+      ]
+    },
+    {
+      "cad": [
+        2783.8,
+        -389.5
+      ],
+      "world": [
+        281155.18,
+        2115899.05
+      ]
+    }
+  ]
+}

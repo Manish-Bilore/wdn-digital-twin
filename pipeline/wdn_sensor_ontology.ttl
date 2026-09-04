@@ -1,0 +1,469 @@
+@prefix wdn:  <https://w3id.org/iitb/wdn#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn:  <http://www.w3.org/ns/ssn/> .
+@prefix ssn-system: <http://www.w3.org/ns/ssn/systems/> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix quantitykind: <http://qudt.org/vocab/quantitykind/> .
+@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+
+################################################################################
+# Ontology header
+################################################################################
+
+<https://w3id.org/iitb/wdn> a owl:Ontology ;
+    dcterms:title "Water Distribution Network Sensor Ontology (WDN-SO)"@en ;
+    dcterms:description """An OWL 2 DL ontology for describing water-quality and
+hydraulic sensing in a piped water distribution network, together with the
+network topology the sensors are placed on and the multi-criteria rationale that
+justified each placement.
+
+The ontology has three interlocking parts:
+
+  (1) NETWORK  - the hydraulic asset graph (junctions, dead ends, pipes, tanks,
+      reservoirs, district metered areas) with the state variables an EPANET
+      model produces for them (elevation, demand, pressure, flow, velocity).
+  (2) SENSING  - the deployed platform, its sensors, the observable properties
+      they measure, and the observations they emit, aligned to SOSA/SSN so that
+      observation data federates with any other SOSA dataset.
+  (3) PLACEMENT - a reified account of WHY a node was instrumented: the
+      hierarchical overlay criteria (topology, terrain, pressure, demand) that
+      each selected node satisfied.
+
+Part (3) is what makes semantic search over the deployment possible: a query can
+ask for 'every pH sensor sited on a dead end that failed the low-pressure
+criterion' without any of that being hard-coded in a relational schema."""@en ;
+    dcterms:creator "Manish Bilore" ;
+    dcterms:created "2024-03-01"^^xsd:date ;
+    dcterms:source "Optimal locations for placement of smart water meters in a water distribution network (IIT Bombay campus WDN)"@en ;
+    owl:versionIRI <https://w3id.org/iitb/wdn/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <http://www.w3.org/ns/sosa/> ,
+                <http://www.w3.org/ns/ssn/> .
+
+################################################################################
+# PART 1 - NETWORK TOPOLOGY
+################################################################################
+
+wdn:NetworkElement a owl:Class ;
+    rdfs:subClassOf geo:Feature ;
+    rdfs:label "Network element"@en ;
+    rdfs:comment "Any physical component of the water distribution network."@en .
+
+wdn:Node a owl:Class ;
+    rdfs:subClassOf wdn:NetworkElement ;
+    rdfs:label "Node"@en ;
+    rdfs:comment "A zero-dimensional element: the endpoint of one or more links."@en .
+
+wdn:Link a owl:Class ;
+    rdfs:subClassOf wdn:NetworkElement ;
+    rdfs:label "Link"@en ;
+    rdfs:comment "A one-dimensional element connecting exactly two nodes."@en .
+
+wdn:Node owl:disjointWith wdn:Link .
+
+# --- node subtypes ------------------------------------------------------------
+
+wdn:Junction a owl:Class ;
+    rdfs:subClassOf wdn:Node ;
+    rdfs:label "Junction"@en ;
+    rdfs:comment "A demand node where three or more links meet. Junctions are the primary candidates for instrumentation because a measurement there constrains several branches at once."@en .
+
+wdn:DeadEnd a owl:Class ;
+    rdfs:subClassOf wdn:Node ;
+    rdfs:label "Dead end"@en ;
+    rdfs:comment "A terminal node of degree one. Dead ends accumulate stagnant water, lose disinfectant residual and are therefore water-quality critical out of proportion to the demand they serve."@en .
+
+wdn:Bend a owl:Class ;
+    rdfs:subClassOf wdn:Node ;
+    rdfs:label "Bend"@en ;
+    rdfs:comment "A node of degree two, present only to carry geometry. Bends are excluded from sensor candidacy: they add no operational information beyond their neighbours."@en .
+
+wdn:Tank a owl:Class ;
+    rdfs:subClassOf wdn:Node ;
+    rdfs:label "Storage tank"@en .
+
+wdn:Reservoir a owl:Class ;
+    rdfs:subClassOf wdn:Node ;
+    rdfs:label "Reservoir"@en ;
+    rdfs:comment "An infinite-head boundary condition; in this network the campus head reservoir at the pump house."@en .
+
+wdn:Junction owl:disjointWith wdn:DeadEnd , wdn:Bend , wdn:Tank , wdn:Reservoir .
+wdn:DeadEnd  owl:disjointWith wdn:Bend , wdn:Tank , wdn:Reservoir .
+
+# --- link subtypes ------------------------------------------------------------
+
+wdn:Pipe a owl:Class ;
+    rdfs:subClassOf wdn:Link ;
+    rdfs:label "Pipe"@en .
+
+wdn:Valve a owl:Class ;
+    rdfs:subClassOf wdn:Link ;
+    rdfs:label "Valve"@en .
+
+wdn:AirValve a owl:Class ; rdfs:subClassOf wdn:Valve ; rdfs:label "Air valve"@en .
+wdn:NonReturnValve a owl:Class ; rdfs:subClassOf wdn:Valve ; rdfs:label "Non-return valve"@en .
+wdn:WashOut a owl:Class ; rdfs:subClassOf wdn:Valve ; rdfs:label "Wash-out / scour valve"@en .
+wdn:Pump a owl:Class ; rdfs:subClassOf wdn:Link ; rdfs:label "Pump"@en .
+
+wdn:FireHydrant a owl:Class ;
+    rdfs:subClassOf wdn:NetworkElement ;
+    rdfs:label "Fire hydrant"@en .
+
+# --- pipe material ------------------------------------------------------------
+
+wdn:PipeMaterial a owl:Class ;
+    rdfs:label "Pipe material"@en ;
+    rdfs:comment "Material class of a pipe; determines the Hazen-Williams roughness coefficient used in the hydraulic solve."@en .
+
+wdn:CastIron       a wdn:PipeMaterial ; rdfs:label "Cast iron (C.I.)"@en ;        wdn:hazenWilliamsC 100 .
+wdn:GalvanisedIron a wdn:PipeMaterial ; rdfs:label "Galvanised iron (G.I.)"@en ;  wdn:hazenWilliamsC 120 .
+wdn:DuctileIron    a wdn:PipeMaterial ; rdfs:label "Ductile iron (D.I.)"@en ;     wdn:hazenWilliamsC 130 .
+wdn:UnknownMaterial a wdn:PipeMaterial ; rdfs:label "Unspecified"@en ;            wdn:hazenWilliamsC 110 .
+
+# --- zoning -------------------------------------------------------------------
+
+wdn:DistrictMeteredArea a owl:Class ;
+    rdfs:subClassOf geo:Feature ;
+    rdfs:label "District metered area"@en ;
+    skos:altLabel "DMA"@en , "cluster"@en , "zone"@en ;
+    rdfs:comment "A hydraulically delineated sub-area of the network. Here derived by k-means clustering of junction coordinates followed by Thiessen tessellation of the cluster centroids."@en .
+
+# --- topology object properties ----------------------------------------------
+
+wdn:startNode a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Link ; rdfs:range wdn:Node ;
+    rdfs:label "start node"@en .
+
+wdn:endNode a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Link ; rdfs:range wdn:Node ;
+    rdfs:label "end node"@en .
+
+wdn:connectsTo a owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:domain wdn:Node ; rdfs:range wdn:Node ;
+    rdfs:label "connects to"@en ;
+    rdfs:comment "Hydraulic adjacency: the two nodes are the endpoints of a common link."@en .
+
+wdn:feeds a owl:ObjectProperty , owl:TransitiveProperty ;
+    rdfs:domain wdn:Node ; rdfs:range wdn:Node ;
+    rdfs:label "feeds"@en ;
+    rdfs:comment "Directed, transitive supply relation: water reaching the object node has passed through the subject node. Lets a query retrieve everything downstream of a contamination point in one hop."@en .
+
+wdn:inDMA a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:NetworkElement ; rdfs:range wdn:DistrictMeteredArea ;
+    rdfs:label "in DMA"@en .
+
+wdn:hasMaterial a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Pipe ; rdfs:range wdn:PipeMaterial ;
+    rdfs:label "has material"@en .
+
+# --- topology / state datatype properties ------------------------------------
+
+wdn:elevation a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Node ; rdfs:range xsd:decimal ;
+    qudt:hasQuantityKind quantitykind:Altitude ; qudt:unit unit:M ;
+    rdfs:label "elevation (m)"@en .
+
+wdn:baseDemand a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Node ; rdfs:range xsd:decimal ;
+    qudt:hasQuantityKind quantitykind:VolumeFlowRate ; qudt:unit unit:L-PER-SEC ;
+    rdfs:label "base demand (L/s)"@en ;
+    rdfs:comment "Average-day nodal demand, allocated by the area-based (Thiessen) method."@en .
+
+wdn:modelledPressure a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Node ; rdfs:range xsd:decimal ;
+    qudt:hasQuantityKind quantitykind:Pressure ; qudt:unit unit:M ;
+    rdfs:label "modelled pressure head (m)"@en ;
+    rdfs:comment "Steady-state peak-demand pressure from the EPANET solve. Distinct from an observed pressure, which is a sosa:Observation."@en .
+
+wdn:nodeDegree a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Node ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "node degree"@en .
+
+wdn:voronoiArea a owl:DatatypeProperty ;
+    rdfs:domain wdn:Node ; rdfs:range xsd:decimal ;
+    qudt:unit unit:M2 ; rdfs:label "Thiessen polygon area (m2)"@en .
+
+wdn:diameter a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Link ; rdfs:range xsd:decimal ;
+    qudt:hasQuantityKind quantitykind:Diameter ; qudt:unit unit:MilliM ;
+    rdfs:label "internal diameter (mm)"@en .
+
+wdn:length a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:Link ; rdfs:range xsd:decimal ;
+    qudt:hasQuantityKind quantitykind:Length ; qudt:unit unit:M ;
+    rdfs:label "length (m)"@en .
+
+wdn:hazenWilliamsC a owl:DatatypeProperty ;
+    rdfs:range xsd:decimal ; rdfs:label "Hazen-Williams C"@en .
+
+################################################################################
+# PART 2 - SENSING (SOSA / SSN alignment)
+################################################################################
+
+wdn:MonitoringStation a owl:Class ;
+    rdfs:subClassOf sosa:Platform ;
+    rdfs:label "Monitoring station"@en ;
+    rdfs:comment "The physical IoT enclosure installed at a network node, hosting one or more sensors. Modelled as a sosa:Platform so that sosa:hosts links it to its sensors."@en .
+
+wdn:SmartWaterMeter a owl:Class ;
+    rdfs:subClassOf wdn:MonitoringStation ;
+    rdfs:label "Smart water meter"@en ;
+    rdfs:comment "A monitoring station that measures consumption in addition to water quality, and reports in real time."@en .
+
+wdn:WaterQualitySensor a owl:Class ;
+    rdfs:subClassOf sosa:Sensor ;
+    rdfs:label "Water-quality sensor"@en .
+
+wdn:HydraulicSensor a owl:Class ;
+    rdfs:subClassOf sosa:Sensor ;
+    rdfs:label "Hydraulic sensor"@en .
+
+wdn:PHSensor a owl:Class ; rdfs:subClassOf wdn:WaterQualitySensor ;
+    rdfs:label "pH sensor"@en ;
+    rdfs:comment "Glass ion-selective electrode with BNC termination; requires temperature compensation."@en .
+wdn:ORPSensor a owl:Class ; rdfs:subClassOf wdn:WaterQualitySensor ;
+    rdfs:label "ORP sensor"@en ;
+    skos:altLabel "redox sensor"@en ;
+    rdfs:comment "Platinum-ring oxidation-reduction potential electrode. Used as a proxy for disinfectant residual, which is the single most diagnostic water-quality signal in a distribution network."@en .
+wdn:DissolvedOxygenSensor a owl:Class ; rdfs:subClassOf wdn:WaterQualitySensor ;
+    rdfs:label "dissolved oxygen sensor"@en ;
+    skos:altLabel "DO sensor"@en .
+wdn:TDSSensor a owl:Class ; rdfs:subClassOf wdn:WaterQualitySensor ;
+    rdfs:label "TDS sensor"@en ;
+    skos:altLabel "conductivity sensor"@en , "EC sensor"@en , "dissolved salts sensor"@en .
+wdn:TemperatureSensor a owl:Class ; rdfs:subClassOf wdn:WaterQualitySensor ;
+    rdfs:label "water temperature sensor"@en ;
+    rdfs:comment "1-Wire digital thermometer. Doubles as the compensation input for the pH, TDS and DO channels, so it is a dependency of those sensors rather than an independent one."@en .
+wdn:TurbiditySensor a owl:Class ; rdfs:subClassOf wdn:WaterQualitySensor ;
+    rdfs:label "turbidity sensor"@en .
+
+wdn:PressureSensor a owl:Class ; rdfs:subClassOf wdn:HydraulicSensor ;
+    rdfs:label "pressure sensor"@en .
+wdn:FlowSensor a owl:Class ; rdfs:subClassOf wdn:HydraulicSensor ;
+    rdfs:label "flow sensor"@en .
+
+# --- observable properties (SOSA individuals) ---------------------------------
+
+wdn:pH a sosa:ObservableProperty , owl:NamedIndividual ;
+    rdfs:label "pH"@en ;
+    qudt:hasQuantityKind quantitykind:PH ;
+    wdn:permissibleMin 6.5 ; wdn:permissibleMax 8.5 ;
+    rdfs:comment "IS 10500:2012 acceptable range for drinking water."@en .
+
+wdn:oxidationReductionPotential a sosa:ObservableProperty , owl:NamedIndividual ;
+    rdfs:label "oxidation-reduction potential"@en ;
+    qudt:unit unit:MilliV ; wdn:permissibleMin 300 ; wdn:permissibleMax 600 .
+
+wdn:dissolvedOxygen a sosa:ObservableProperty , owl:NamedIndividual ;
+    rdfs:label "dissolved oxygen"@en ;
+    qudt:unit unit:MilliGM-PER-L ; wdn:permissibleMin 4 .
+
+wdn:totalDissolvedSolids a sosa:ObservableProperty , owl:NamedIndividual ;
+    rdfs:label "total dissolved solids"@en ;
+    qudt:unit unit:PPM ; wdn:permissibleMax 500 ;
+    rdfs:comment "IS 10500:2012 acceptable limit 500 ppm, permissible 2000 ppm in the absence of an alternate source."@en .
+
+wdn:waterTemperature a sosa:ObservableProperty , owl:NamedIndividual ;
+    rdfs:label "water temperature"@en ;
+    qudt:hasQuantityKind quantitykind:Temperature ; qudt:unit unit:DEG_C .
+
+wdn:turbidity a sosa:ObservableProperty , owl:NamedIndividual ;
+    rdfs:label "turbidity"@en ; qudt:unit unit:NTU ; wdn:permissibleMax 1 .
+
+wdn:pressureHead a sosa:ObservableProperty , owl:NamedIndividual ;
+    rdfs:label "pressure head"@en ; qudt:unit unit:M .
+
+wdn:volumetricFlow a sosa:ObservableProperty , owl:NamedIndividual ;
+    rdfs:label "volumetric flow"@en ; qudt:unit unit:L-PER-SEC .
+
+wdn:permissibleMin a owl:DatatypeProperty ; rdfs:range xsd:decimal ;
+    rdfs:label "permissible minimum"@en .
+wdn:permissibleMax a owl:DatatypeProperty ; rdfs:range xsd:decimal ;
+    rdfs:label "permissible maximum"@en .
+
+# --- deployment properties ----------------------------------------------------
+
+wdn:deployedAt a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain wdn:MonitoringStation ; rdfs:range wdn:Node ;
+    rdfs:subPropertyOf sosa:isFeatureOfInterestOf ;
+    rdfs:label "deployed at"@en .
+
+wdn:monitors a owl:ObjectProperty ;
+    rdfs:domain wdn:MonitoringStation ; rdfs:range wdn:NetworkElement ;
+    rdfs:label "monitors"@en .
+
+wdn:analogPin a owl:DatatypeProperty ; rdfs:domain sosa:Sensor ; rdfs:range xsd:string ;
+    rdfs:label "MCU pin"@en ;
+    rdfs:comment "The microcontroller pin the sensor's front-end is wired to; carried in the ontology so that a firmware map can be generated from the graph."@en .
+
+wdn:compensatedBy a owl:ObjectProperty ;
+    rdfs:domain sosa:Sensor ; rdfs:range wdn:TemperatureSensor ;
+    rdfs:label "compensated by"@en ;
+    rdfs:comment "The subject sensor's raw reading is corrected using the object temperature sensor. Makes the pH/TDS/DO dependency on temperature explicit and machine-checkable."@en .
+
+wdn:samplingInterval a owl:DatatypeProperty ;
+    rdfs:domain wdn:MonitoringStation ; rdfs:range xsd:duration ;
+    rdfs:label "sampling interval"@en .
+
+################################################################################
+# PART 3 - PLACEMENT RATIONALE
+################################################################################
+
+wdn:PlacementCriterion a owl:Class ;
+    rdfs:label "Placement criterion"@en ;
+    rdfs:comment "One filter in the hierarchical overlay analysis. Reifying the criteria (rather than baking them into a boolean column) is what lets the deployment be queried by justification."@en .
+
+wdn:TopologyCriterion a owl:Class ; rdfs:subClassOf wdn:PlacementCriterion ;
+    rdfs:label "Topology criterion"@en .
+wdn:TerrainCriterion a owl:Class ; rdfs:subClassOf wdn:PlacementCriterion ;
+    rdfs:label "Terrain criterion"@en .
+wdn:PressureCriterion a owl:Class ; rdfs:subClassOf wdn:PlacementCriterion ;
+    rdfs:label "Pressure criterion"@en .
+wdn:DemandCriterion a owl:Class ; rdfs:subClassOf wdn:PlacementCriterion ;
+    rdfs:label "Demand criterion"@en .
+
+wdn:C1_JunctionOrDeadEnd a wdn:TopologyCriterion , owl:NamedIndividual ;
+    rdfs:label "Junction or dead end"@en ;
+    dcterms:description "Retain nodes of degree 1 or degree >= 3; discard degree-2 bends."@en ;
+    wdn:filterRank 1 .
+
+wdn:C2_AboveMeanElevation a wdn:TerrainCriterion , owl:NamedIndividual ;
+    rdfs:label "Elevation above DMA mean"@en ;
+    dcterms:description "High points govern network performance: they are the first to lose pressure and the last to be refilled."@en ;
+    wdn:filterRank 2 .
+
+wdn:C3_PressureExtreme a wdn:PressureCriterion , owl:NamedIndividual ;
+    rdfs:label "Pressure in the lower 20th or upper 80th percentile"@en ;
+    dcterms:description "Low pressure risks intrusion of contaminants and consumer dissatisfaction; high pressure drives leakage and pipe bursts. Both tails are worth instrumenting; the middle is not."@en ;
+    wdn:filterRank 3 .
+
+wdn:C4_AboveMeanDemand a wdn:DemandCriterion , owl:NamedIndividual ;
+    rdfs:label "Demand above DMA mean"@en ;
+    dcterms:description "Fluctuations at high-demand nodes propagate furthest through the network."@en ;
+    wdn:filterRank 4 .
+
+wdn:filterRank a owl:DatatypeProperty ; rdfs:range xsd:integer ;
+    rdfs:label "filter rank"@en ;
+    rdfs:comment "Position of the criterion in the hierarchical overlay sequence."@en .
+
+wdn:satisfiesCriterion a owl:ObjectProperty ;
+    rdfs:domain wdn:Node ; rdfs:range wdn:PlacementCriterion ;
+    rdfs:label "satisfies criterion"@en .
+
+wdn:selectionJustification a owl:DatatypeProperty ;
+    rdfs:domain wdn:Node ; rdfs:range xsd:string ;
+    rdfs:label "selection justification"@en .
+
+# --- inferred class: what makes a node instrumentable -------------------------
+
+wdn:CandidateSensorNode a owl:Class ;
+    rdfs:label "Candidate sensor node"@en ;
+    rdfs:comment "Inferred: any node satisfying all four overlay criteria. A reasoner classifies nodes into this class from their satisfiesCriterion assertions - the selection rule lives in the ontology, not in application code."@en ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            wdn:Node
+            [ a owl:Restriction ; owl:onProperty wdn:satisfiesCriterion ;
+              owl:hasValue wdn:C1_JunctionOrDeadEnd ]
+            [ a owl:Restriction ; owl:onProperty wdn:satisfiesCriterion ;
+              owl:hasValue wdn:C2_AboveMeanElevation ]
+            [ a owl:Restriction ; owl:onProperty wdn:satisfiesCriterion ;
+              owl:hasValue wdn:C3_PressureExtreme ]
+            [ a owl:Restriction ; owl:onProperty wdn:satisfiesCriterion ;
+              owl:hasValue wdn:C4_AboveMeanDemand ]
+        )
+    ] .
+
+wdn:InstrumentedNode a owl:Class ;
+    rdfs:label "Instrumented node"@en ;
+    rdfs:comment "Inferred: a node that some monitoring station is deployed at."@en ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            wdn:Node
+            [ a owl:Restriction ; owl:onProperty [ owl:inverseOf wdn:deployedAt ] ;
+              owl:someValuesFrom wdn:MonitoringStation ]
+        )
+    ] .
+
+wdn:QualityCriticalNode a owl:Class ;
+    rdfs:label "Water-quality critical node"@en ;
+    rdfs:comment "Inferred: a dead end, where stagnation and residual decay make water-quality sensing more valuable than hydraulic sensing."@en ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( wdn:Node wdn:DeadEnd )
+    ] .
+
+################################################################################
+# Sensor -> observable property axioms (sosa:observes on the class level)
+################################################################################
+
+wdn:PHSensor rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty sosa:observes ; owl:hasValue wdn:pH ] .
+wdn:ORPSensor rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty sosa:observes ; owl:hasValue wdn:oxidationReductionPotential ] .
+wdn:DissolvedOxygenSensor rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty sosa:observes ; owl:hasValue wdn:dissolvedOxygen ] .
+wdn:TDSSensor rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty sosa:observes ; owl:hasValue wdn:totalDissolvedSolids ] .
+wdn:TemperatureSensor rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty sosa:observes ; owl:hasValue wdn:waterTemperature ] .
+wdn:TurbiditySensor rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty sosa:observes ; owl:hasValue wdn:turbidity ] .
+wdn:PressureSensor rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty sosa:observes ; owl:hasValue wdn:pressureHead ] .
+wdn:FlowSensor rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty sosa:observes ; owl:hasValue wdn:volumetricFlow ] .
+
+# a station is a smart water meter iff it hosts a flow sensor
+wdn:SmartWaterMeter owl:equivalentClass [
+    a owl:Class ;
+    owl:intersectionOf (
+        wdn:MonitoringStation
+        [ a owl:Restriction ; owl:onProperty sosa:hosts ;
+          owl:someValuesFrom wdn:FlowSensor ]
+    )
+] .
+
+################################################################################
+# Sensor model catalogue (the hardware actually used)
+################################################################################
+
+wdn:SensorModel a owl:Class ; rdfs:label "Sensor model"@en .
+wdn:hasModel a owl:ObjectProperty ; rdfs:domain sosa:Sensor ; rdfs:range wdn:SensorModel .
+
+wdn:DFRobot_Gravity_pH_v2 a wdn:SensorModel , owl:NamedIndividual ;
+    rdfs:label "DFRobot Gravity Analog pH v2"@en ;
+    wdn:measurementRangeMin 0 ; wdn:measurementRangeMax 14 ;
+    wdn:accuracy "0.1 pH at 25 C" .
+
+wdn:DFRobot_Gravity_ORP a wdn:SensorModel , owl:NamedIndividual ;
+    rdfs:label "DFRobot Gravity Analog ORP"@en ;
+    wdn:measurementRangeMin -2000 ; wdn:measurementRangeMax 2000 ;
+    wdn:accuracy "10 mV" .
+
+wdn:DFRobot_Gravity_DO a wdn:SensorModel , owl:NamedIndividual ;
+    rdfs:label "DFRobot Gravity Analog Dissolved Oxygen"@en ;
+    wdn:measurementRangeMin 0 ; wdn:measurementRangeMax 20 .
+
+wdn:DFRobot_Gravity_TDS a wdn:SensorModel , owl:NamedIndividual ;
+    rdfs:label "DFRobot Gravity Analog TDS"@en ;
+    wdn:measurementRangeMin 0 ; wdn:measurementRangeMax 1000 ;
+    wdn:accuracy "10 percent full scale" .
+
+wdn:Maxim_DS18B20 a wdn:SensorModel , owl:NamedIndividual ;
+    rdfs:label "Maxim DS18B20 1-Wire thermometer"@en ;
+    wdn:measurementRangeMin -55 ; wdn:measurementRangeMax 125 ;
+    wdn:accuracy "0.5 C between -10 and 85 C" .
+
+wdn:measurementRangeMin a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+wdn:measurementRangeMax a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+wdn:accuracy a owl:DatatypeProperty ; rdfs:range xsd:string .

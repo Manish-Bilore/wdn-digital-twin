@@ -1,0 +1,14 @@
+# pinned to a combination verified end-to-end on this pipeline
+geopandas==1.1.4
+shapely==2.1.2
+pyogrio==0.13.0
+pyproj==3.7.2
+rasterio==1.5.1
+scipy==1.18.1
+scikit-learn==1.9.0
+pandas==3.0.5
+numpy==2.5.2
+matplotlib==3.11.1
+PyYAML==6.0.3
+wntr==1.5.0
+rdflib==7.6.0

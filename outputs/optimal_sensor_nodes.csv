@@ -1,0 +1,30 @@
+node_id,cluster,x,y,elevation_m,pressure_m,demand_lps,degree,node_type,risk_flags,selection_reason
+J27,1,280451.775,2117173.713,44.82,62.14,0.63087,1,dead_end,StagnationRisk|ServiceLevelRisk,dead end; elev 44.8 m > DMA mean 44.6; demand 0.6309 L/s > DMA mean 0.2977
+J40,1,280576.379,2116951.25,47.79,28.71,0.41305,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 47.8 m > DMA mean 44.6; low pressure 28.7 m (<= P20 52.72); demand 0.4130 L/s > DMA mean 0.2977
+J8,1,280247.755,2117211.087,45.92,60.03,0.32208,3,junction,ServiceLevelRisk,junction; elev 45.9 m > DMA mean 44.6; demand 0.3221 L/s > DMA mean 0.2977
+J3,1,280193.54,2117144.482,45.3,60.37,0.30129,5,junction,ServiceLevelRisk,junction; elev 45.3 m > DMA mean 44.6; demand 0.3013 L/s > DMA mean 0.2977
+J41,1,280577.794,2116858.62,46.95,22.63,0.28405,3,junction,IntrusionRisk,junction; elev 47.0 m > DMA mean 44.6; low pressure 22.6 m (<= P20 52.72)
+J149,2,280798.247,2117502.266,60.0,49.86,0.37902,1,dead_end,StagnationRisk|ServiceLevelRisk,dead end; elev 60.0 m > DMA mean 54.9; demand 0.3790 L/s > DMA mean 0.0623
+J246,2,281077.826,2117207.166,56.32,49.61,0.29788,1,dead_end,StagnationRisk|ServiceLevelRisk,dead end; elev 56.3 m > DMA mean 54.9; demand 0.2979 L/s > DMA mean 0.0623
+J216,2,280965.103,2117400.663,66.61,43.17,0.10475,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 66.6 m > DMA mean 54.9; low pressure 43.2 m (<= P20 49.51); demand 0.1047 L/s > DMA mean 0.0623
+J212,2,280945.011,2117338.524,63.58,41.92,0.09242,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 63.6 m > DMA mean 54.9; low pressure 41.9 m (<= P20 49.51); demand 0.0924 L/s > DMA mean 0.0623
+J161,2,280827.664,2117275.096,57.52,47.98,0.06532,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 57.5 m > DMA mean 54.9; low pressure 48.0 m (<= P20 49.51); demand 0.0653 L/s > DMA mean 0.0623
+J11,3,280331.683,2115943.287,44.73,25.63,0.16274,3,junction,IntrusionRisk|ServiceLevelRisk,junction; elev 44.7 m > DMA mean 42.5; low pressure 25.6 m (<= P20 27.81); demand 0.1627 L/s > DMA mean 0.0409
+J10,3,280320.266,2115964.571,46.4,23.84,0.1562,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 46.4 m > DMA mean 42.5; low pressure 23.8 m (<= P20 27.81); demand 0.1562 L/s > DMA mean 0.0409
+J69,3,280641.841,2115979.004,43.95,31.76,0.0979,1,dead_end,StagnationRisk|ServiceLevelRisk,dead end; elev 44.0 m > DMA mean 42.5; demand 0.0979 L/s > DMA mean 0.0409
+J23,3,280427.986,2115916.5,42.66,27.74,0.0688,3,junction,IntrusionRisk|ServiceLevelRisk,junction; elev 42.7 m > DMA mean 42.5; low pressure 27.7 m (<= P20 27.81); demand 0.0688 L/s > DMA mean 0.0409
+J12,3,280354.611,2115943.297,43.89,26.47,0.04394,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 43.9 m > DMA mean 42.5; low pressure 26.5 m (<= P20 27.81); demand 0.0439 L/s > DMA mean 0.0409
+J185,4,280875.778,2116633.391,52.55,15.0,0.4453,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 52.5 m > DMA mean 50.9; low pressure 15.0 m (<= P20 38.28); demand 0.4453 L/s > DMA mean 0.0887
+J206,4,280921.983,2116928.834,53.87,51.01,0.28,1,dead_end,StagnationRisk|LeakageRisk|ServiceLevelRisk,dead end; elev 53.9 m > DMA mean 50.9; high pressure 51.0 m (>= 46.39); demand 0.2800 L/s > DMA mean 0.0887
+J220,4,280969.149,2116677.53,54.43,36.44,0.23449,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 54.4 m > DMA mean 50.9; low pressure 36.4 m (<= P20 38.28); demand 0.2345 L/s > DMA mean 0.0887
+J180,4,280860.357,2116880.982,55.38,37.22,0.21448,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 55.4 m > DMA mean 50.9; low pressure 37.2 m (<= P20 38.28); demand 0.2145 L/s > DMA mean 0.0887
+J176,4,280852.726,2116808.098,54.6,38.12,0.17377,1,dead_end,StagnationRisk|IntrusionRisk|ServiceLevelRisk,dead end; elev 54.6 m > DMA mean 50.9; low pressure 38.1 m (<= P20 38.28); demand 0.1738 L/s > DMA mean 0.0887
+J122,4,280713.046,2116564.858,51.14,18.53,0.1651,5,junction,IntrusionRisk|ServiceLevelRisk,junction; elev 51.1 m > DMA mean 50.9; low pressure 18.5 m (<= P20 38.28); demand 0.1651 L/s > DMA mean 0.0887
+J120,4,280711.747,2116597.376,51.31,18.36,0.15566,4,junction,IntrusionRisk|ServiceLevelRisk,junction; elev 51.3 m > DMA mean 50.9; low pressure 18.4 m (<= P20 38.28); demand 0.1557 L/s > DMA mean 0.0887
+J188,4,280884.627,2116770.783,54.52,38.28,0.09754,4,junction,IntrusionRisk|ServiceLevelRisk,junction; elev 54.5 m > DMA mean 50.9; low pressure 38.3 m (<= P20 38.28); demand 0.0975 L/s > DMA mean 0.0887
+J123,5,280714.095,2116466.584,50.56,19.82,0.3149,3,junction,IntrusionRisk|ServiceLevelRisk,junction; elev 50.6 m > DMA mean 48.4; low pressure 19.8 m (<= P20 32.49); demand 0.3149 L/s > DMA mean 0.0437
+J247,5,281080.062,2116360.743,49.29,39.15,0.08998,3,junction,LeakageRisk|ServiceLevelRisk,junction; elev 49.3 m > DMA mean 48.4; high pressure 39.1 m (>= 35.96); demand 0.0900 L/s > DMA mean 0.0437
+J138,5,280769.167,2116325.516,51.72,30.76,0.07228,3,junction,IntrusionRisk|ServiceLevelRisk,junction; elev 51.7 m > DMA mean 48.4; low pressure 30.8 m (<= P20 32.49); demand 0.0723 L/s > DMA mean 0.0437
+J203,5,280913.026,2116138.516,50.0,36.0,0.05159,1,dead_end,StagnationRisk|LeakageRisk|ServiceLevelRisk,dead end; elev 50.0 m > DMA mean 48.4; high pressure 36.0 m (>= 35.96); demand 0.0516 L/s > DMA mean 0.0437
+J239,5,281012.715,2116256.175,50.15,36.99,0.04606,1,dead_end,StagnationRisk|LeakageRisk|ServiceLevelRisk,dead end; elev 50.1 m > DMA mean 48.4; high pressure 37.0 m (>= 35.96); demand 0.0461 L/s > DMA mean 0.0437
+J217,5,280965.31,2116194.362,50.65,35.96,0.04506,1,dead_end,StagnationRisk|LeakageRisk|ServiceLevelRisk,dead end; elev 50.6 m > DMA mean 48.4; high pressure 36.0 m (>= 35.96); demand 0.0451 L/s > DMA mean 0.0437

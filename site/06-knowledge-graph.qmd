@@ -1,0 +1,228 @@
+---
+title: "The knowledge graph"
+subtitle: "What the graph actually contains, and why it is a graph"
+page-layout: full
+---
+
+```{=html}
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+```
+
+A knowledge graph is three things at once: **entities** with identity, **typed
+relationships** between them, and a **shared vocabulary** that gives both a
+meaning a machine can act on. Drop any one and you have something else — a
+table, a diagram, or a folder of files.
+
+This project has all three. `wdn:J141` is an entity with a stable IRI.
+`wdn:deployedAt` is a typed relationship, not a foreign key that happens to
+line up. And `wdn:DeadEnd` means something: it is a subclass of `wdn:Node`,
+disjoint from `wdn:Link`, and a reasoner can act on that without being told
+again.
+
+```{python}
+#| echo: false
+#| output: asis
+from rdflib import Graph, RDF, URIRef, Literal
+from collections import Counter, defaultdict
+import json
+
+g = Graph(); g.parse("data/graph.ttl", format="turtle")
+NS = "https://w3id.org/iitb/wdn#"
+PFX = [(NS,"wdn:"), ("http://www.w3.org/ns/sosa/","sosa:"),
+       ("http://www.w3.org/ns/ssn/","ssn:"),
+       ("http://www.w3.org/2000/01/rdf-schema#","rdfs:"),
+       ("http://www.w3.org/2002/07/owl#","owl:"),
+       ("http://www.w3.org/1999/02/22-rdf-syntax-ns#","rdf:"),
+       ("http://www.opengis.net/ont/geosparql#","geo:"),
+       ("http://qudt.org/vocab/unit/","unit:"),
+       ("http://purl.org/dc/terms/","dcterms:"),
+       ("http://www.w3.org/2001/XMLSchema#","xsd:")]
+def sh(t):
+    t = str(t)
+    for p, a in PFX:
+        if t.startswith(p): return t.replace(p, a)
+    return t
+
+TBOX = {"owl:Class","owl:ObjectProperty","owl:DatatypeProperty","owl:Ontology",
+        "owl:FunctionalProperty","owl:Restriction","owl:SymmetricProperty",
+        "owl:TransitiveProperty","rdfs:Class","owl:NamedIndividual"}
+
+alltypes = defaultdict(set)
+for s_, _, o in g.triples((None, RDF.type, None)):
+    ot = sh(o)
+    if ot not in TBOX: alltypes[s_].add(ot)
+freq = Counter(t for ts in alltypes.values() for t in ts)
+# the most specific asserted type is the rarest one
+ntype = {s_: min(ts, key=lambda t: freq[t]) for s_, ts in alltypes.items() if ts}
+
+n_entities = len(ntype)
+n_rel  = sum(1 for s_, p, o in g if isinstance(o, URIRef) and sh(p) != "rdf:type")
+n_attr = sum(1 for s_, p, o in g if isinstance(o, Literal))
+n_pred = len({sh(p) for _, p, _ in g})
+
+cells = [(f"{len(g):,}", "triples"), (f"{n_entities:,}", "entities"),
+         (f"{n_rel:,}", "relationships"), (f"{n_attr:,}", "attributes"),
+         (f"{n_pred}", "distinct predicates"),
+         (f"{len(set(ntype.values()))}", "classes in use")]
+print('<div class="statbar">')
+for n, l in cells:
+    print(f'<div><div class="n">{n}</div><div class="l">{l}</div></div>')
+print('</div>')
+```
+
+## The schema, derived from the data
+
+Most ontology diagrams show what the author *declared*. This one shows what is
+actually **asserted in the instance data**: every distinct
+(class → predicate → class) pattern, sized by how often it occurs. If a
+declared property is never used, it does not appear here.
+
+```{python}
+#| echo: false
+#| output: asis
+schema = Counter()
+for s_, p, o in g:
+    ps = sh(p)
+    if ps == "rdf:type": continue
+    a = ntype.get(s_); b = ntype.get(o) if isinstance(o, URIRef) else None
+    if a and b: schema[(a, ps, b)] += 1
+
+LAYER = {
+ "wdn:Pipe":"network", "wdn:Junction":"network", "wdn:DeadEnd":"network",
+ "wdn:Bend":"network", "wdn:WaterDistributionNetwork":"network",
+ "wdn:DistrictMeteredArea":"network", "wdn:PipeMaterial":"network",
+ "wdn:MonitoringStation":"sensing", "sosa:ObservableProperty":"sensing",
+ "wdn:SensorModel":"sensing",
+ "wdn:PlacementRationale":"placement", "wdn:TopologyCriterion":"placement",
+ "wdn:TerrainCriterion":"placement", "wdn:PressureCriterion":"placement",
+ "wdn:DemandCriterion":"placement",
+}
+def layer(c):
+    if c in LAYER: return LAYER[c]
+    if "Sensor" in c: return "sensing"
+    if "Risk" in c or "Criterion" in c: return "placement"
+    return "network"
+
+counts = Counter(ntype.values())
+nodes = sorted({a for a,_,_ in schema} | {b for _,_,b in schema})
+els = [{"data":{"id":c,"label":c,"n":counts.get(c,0)},"classes":layer(c)} for c in nodes]
+for i,((a,p,b),n) in enumerate(schema.items()):
+    els.append({"data":{"id":f"e{i}","source":a,"target":b,"label":p,"n":n}})
+print('<div id="schema-graph" style="height:560px;border:1px solid #e4e7ea;'
+      'border-radius:8px;background:#fbfbfc;"></div>')
+print('<p class="muted" style="font-size:12px;margin-top:6px;">'
+      'Node size follows instance count; edge thickness follows how often the '
+      'pattern occurs. Blue = network, green = sensing, orange = placement. '
+      'Drag to rearrange.</p>')
+print(f'<script>window.SCHEMA={json.dumps(els)};</script>')
+```
+
+```{=html}
+<script>
+(function(){
+  function draw(){
+    if(!window.cytoscape||!window.SCHEMA) return setTimeout(draw,120);
+    cytoscape({
+      container: document.getElementById("schema-graph"),
+      elements: window.SCHEMA,
+      style: [
+        {selector:"node", style:{
+          label:"data(label)", "font-size":9, color:"#202124",
+          "text-valign":"bottom", "text-margin-y":4,
+          width:"mapData(n, 0, 322, 16, 58)",
+          height:"mapData(n, 0, 322, 16, 58)",
+          "background-opacity":0.9}},
+        {selector:".network",  style:{"background-color":"#1a73e8"}},
+        {selector:".sensing",  style:{"background-color":"#2a9d8f"}},
+        {selector:".placement",style:{"background-color":"#f4a261"}},
+        {selector:"edge", style:{
+          label:"data(label)", "font-size":7.5, color:"#5f6368",
+          width:"mapData(n, 1, 322, 0.8, 5)",
+          "line-color":"#c8ccd0", "target-arrow-color":"#c8ccd0",
+          "target-arrow-shape":"triangle", "curve-style":"bezier",
+          "text-rotation":"autorotate", "text-background-color":"#fbfbfc",
+          "text-background-opacity":0.85, "text-background-padding":2}}
+      ],
+      layout:{name:"cose", animate:false, padding:30, nodeRepulsion:24000,
+              idealEdgeLength:130, nestingFactor:0.9}
+    });
+  }
+  draw();
+})();
+</script>
+```
+
+## What is in it
+
+```{python}
+#| echo: false
+import pandas as pd
+rows = [(c, n, layer(c)) for c, n in counts.most_common() if n > 1]
+pd.DataFrame(rows, columns=["Class", "Instances", "Layer"]).style.hide(axis="index")
+```
+
+The three layers are the point. A network model alone cannot say why a node is
+instrumented. A sensor inventory alone cannot say what the node it sits on is
+connected to. Holding them in one graph means the join already exists.
+
+## Why a graph and not three tables
+
+Take a real question: *which sensors sit on dead ends in the district with the
+highest mean elevation?*
+
+Relationally that is a four-way join across a sensor table, a station table, a
+node table and a district table, and you must know in advance that those keys
+line up. If you later add valves, or a second criterion, the schema changes and
+every query that touched it breaks.
+
+In the graph it is a path.
+
+```{python}
+#| echo: false
+#| output: asis
+q = """
+PREFIX wdn: <https://w3id.org/iitb/wdn#>
+SELECT ?station ?sensor ?node ?dma WHERE {
+  ?station wdn:deployedAt ?node .
+  ?node a wdn:DeadEnd ; wdn:inDMA ?dma .
+  ?station <http://www.w3.org/ns/sosa/hosts> ?sensor .
+  ?sensor a wdn:PHSensor .
+} LIMIT 1
+"""
+r = list(g.query(q))
+if r:
+    st, se, nd, dma = [sh(x) for x in r[0]]
+    hops = [(se, "rdf:type", "wdn:PHSensor"), (st, "sosa:hosts", se),
+            (st, "wdn:deployedAt", nd), (nd, "rdf:type", "wdn:DeadEnd"),
+            (nd, "wdn:inDMA", dma)]
+    print('<table class="res" style="font-size:12px;max-width:640px;">')
+    print("<thead><tr><th>subject</th><th>predicate</th><th>object</th></tr></thead><tbody>")
+    for a, p, b in hops:
+        print(f"<tr><td>{a}</td><td><em>{p}</em></td><td>{b}</td></tr>")
+    print("</tbody></table>")
+```
+
+Five hops, no join keys, and nothing in the query had to know how the data was
+stored. Adding valves later adds nodes and edges; it does not invalidate the
+question.
+
+## The vocabulary is borrowed, not invented
+
+Reusing established vocabularies is what makes a graph interoperable rather
+than a private data structure with extra steps.
+
+| Borrowed from | Used for |
+|---|---|
+| [SOSA/SSN](https://www.w3.org/TR/vocab-ssn/) | sensors, platforms, observable properties, the hosting relation |
+| [QUDT](https://qudt.org) | units and quantity kinds |
+| [GeoSPARQL](https://opengeospatial.github.io/ogc-geosparql/) | node geometry as WKT |
+| [SKOS](https://www.w3.org/TR/skos-reference/) | definitions, alternate labels, scope notes |
+
+Only what is genuinely specific to water distribution — pipes, dead ends,
+district metered areas, placement criteria — is defined here.
+
+## Try it
+
+The [explorer](07-explorer.qmd) runs SPARQL against this graph in your browser.
+The whole thing is 8,554 triples and about 26 kB gzipped, which is why it can
+be a live query rather than a screenshot of one.

@@ -1,0 +1,62 @@
+---
+title: "Ontology"
+subtitle: "OWL 2 DL, aligned to SOSA/SSN and QUDT"
+---
+
+The ontology is why the pieces connect. Without it there is a shapefile, an
+`.inp`, a CSV and a firmware repo. With it there is one graph.
+
+Namespace `https://w3id.org/iitb/wdn#`. Three interlocking parts:
+
+**Network** — junctions, dead ends, bends, pipes, valves, tanks, reservoirs and
+district metered areas, carrying the state variables EPANET produces for them.
+
+**Sensing** — platform, sensors, observable properties, observations, on the
+SOSA/SSN pattern. Sensor classes are `owl:equivalentClass` restrictions on
+`sosa:observes`, so a reasoner classifies a sensor by what it measures rather
+than by an asserted type.
+
+**Placement** — a reified account of *why* each node is instrumented: the four
+overlay criteria, the values that satisfied them, and the risk category each
+addresses.
+
+That third part is what makes the deployment queryable. "Every pH sensor on a
+dead end that failed the low-pressure criterion" needs the sensor, the topology,
+the hydraulic result and the placement rationale in one graph, and none of those
+joins are hard-coded anywhere.
+
+```{python}
+#| echo: false
+import json
+m = json.load(open("data/manifest.json"))
+print(f"The published graph holds **{m['counts']['triples']:,} triples** — "
+      f"{m['counts']['junctions']} junctions, {m['counts']['pipes']} pipes, "
+      f"{m['counts']['dmas']} districts, {m['counts']['sensors']} stations and "
+      f"their sensors, with the TBox merged in.")
+```
+
+## Design decisions worth defending
+
+**Reified rationale, not annotation properties.** A placement decision has
+structure — which criterion, what value, what threshold — and annotations
+cannot carry that without becoming unqueryable strings.
+
+**Defined classes over asserted types.** `wdn:PHSensor` is an equivalence
+restriction, not a subclass to be tagged by hand. Add a sensor observing
+`wdn:pH` and it classifies itself.
+
+**QUDT for units.** `wdn:hasUnit unit:PPM` beats a `"ppm"` literal the moment
+anything downstream needs to convert.
+
+## Resolvable identifiers
+
+The namespace resolves through [w3id.org](https://w3id.org), with content
+negotiation serving Turtle, RDF/XML or this documentation depending on the
+`Accept` header. An ontology whose IRIs do not dereference is a namespace-shaped
+string; the redirect is what makes these identifiers real.
+
+```bash
+curl -H "Accept: text/turtle" https://w3id.org/iitb/wdn
+```
+
+[Turtle](data/graph.ttl) · [What is in the graph](06-knowledge-graph.qmd) · [Explorer](07-explorer.qmd)

@@ -1,0 +1,107 @@
+{
+  "name": "iitb",
+  "crs_source": "EPSG:32643",
+  "bounds": [
+    72.909774,
+    19.124523,
+    72.919461,
+    19.139524
+  ],
+  "centre": [
+    72.914617,
+    19.132023
+  ],
+  "counts": {
+    "pipes": 322,
+    "junctions": 275,
+    "sensors": 29,
+    "dmas": 5,
+    "triples": 8554,
+    "pipe_length_km": 18.78,
+    "dead_ends": 133,
+    "diameters_from_cad": 167
+  },
+  "model": {
+    "peak_factor": 2.5,
+    "source_node": "J73",
+    "source_head_m": 111.71,
+    "elevation_m": {
+      "min": 36.71,
+      "median": 49.68,
+      "max": 66.61
+    },
+    "pressure_m": {
+      "min": 15.0,
+      "p20": 33.050000762939455,
+      "median": 39.47999954223633,
+      "p80": 54.08999938964844,
+      "max": 68.2300033569336
+    },
+    "velocity_ms": {
+      "median": 0.16975000500679016,
+      "max": 1.6252000331878662
+    },
+    "demand": {
+      "basis": "population x lpcd",
+      "population": 13429,
+      "lpcd": 135,
+      "total_lpd": 1812915.0,
+      "avg_day_lps": 20.9828,
+      "allocation": "voronoi",
+      "service_area_source": "boundary within 150 m of a main"
+    }
+  },
+  "registration": {
+    "iou": 0.6854,
+    "centroid_only_iou": 0.509,
+    "translation": [
+      278371.38,
+      2116288.55
+    ],
+    "rotation_deg": 0.0,
+    "scale": 1.0,
+    "sharpness": {
+      "iou_at_25m": 0.6744,
+      "iou_at_50m": 0.6515,
+      "iou_at_100m": 0.5939
+    },
+    "contrast_100m": 0.0915,
+    "converged": true
+  },
+  "georeference_mode": "auto_register",
+  "cad": {
+    "source": "Digital Water.dwg",
+    "pipe_layers": [
+      "Water Supply Line"
+    ],
+    "n_lines": 267,
+    "n_diameter_labels": 50,
+    "n_asset_notes": 11
+  },
+  "placement": {
+    "all_nodes": 275,
+    "f1_topology": 275,
+    "f1_f2": 150,
+    "f1_f2_f3": 55,
+    "f1_f2_f3_f4": 22,
+    "topped_up": 7,
+    "selected": 29
+  },
+  "per_dma": {
+    "1": 5,
+    "2": 5,
+    "3": 5,
+    "4": 8,
+    "5": 6
+  },
+  "payload_bytes": {
+    "network.geojson": 129759,
+    "junctions.geojson": 104331,
+    "sensors.geojson": 12603,
+    "dma.geojson": 2810,
+    "demand.geojson": 89652,
+    "boundary.geojson": 1787,
+    "graph.ttl": 294084,
+    "ontology.owl": 781553
+  }
+}

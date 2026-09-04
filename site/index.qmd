@@ -1,0 +1,81 @@
+---
+title: "An ontology-driven digital water distribution network"
+subtitle: "IIT Bombay campus — from an AutoCAD drawing to a queryable knowledge graph"
+toc: false
+---
+
+```{python}
+#| echo: false
+#| output: asis
+import json
+m = json.load(open("data/manifest.json"))
+c = m["counts"]
+cells = [
+    (f"{c['pipes']}", "pipes"),
+    (f"{c['junctions']}", "junctions"),
+    (f"{c['pipe_length_km']} km", "of main"),
+    (f"{c['sensors']}", "sensor nodes"),
+    (f"{c['dmas']}", "district areas"),
+    (f"{c['triples']:,}", "triples"),
+]
+print('<div class="statbar">')
+for n, l in cells:
+    print(f'<div><div class="n">{n}</div><div class="l">{l}</div></div>')
+print('</div>')
+```
+
+A campus water network exists as five disconnected artefacts: a CAD drawing in
+the estate office, a hydraulic model on someone's laptop, a spreadsheet of
+sensor locations, a firmware repository, and a diagram of what the sensors
+measure. Each is intelligible on its own. None of them can answer a question
+that spans two of them.
+
+This project connects all five. The result is a graph in which *"which pH
+sensors sit on dead ends where modelled pressure falls in the bottom fifth of
+their district?"* is a single query rather than a week of cross-referencing.
+
+[Open the explorer →](07-explorer.qmd){.btn .btn-primary}
+
+## How it fits together
+
+| Layer | Artefact | Section |
+|---|---|---|
+| Physical network | AC1015 AutoCAD drawing, 66 estate annotations | [Source data](01-source-data.qmd) |
+| Hydraulic model | EPANET 2.2, Hazen-Williams, peak demand | [Hydraulic model](02-hydraulic-model.qmd) |
+| Monitoring design | K-means districts + hierarchical overlay filter | [Sensor placement](03-sensor-placement.qmd) |
+| Instrumentation | Five-parameter water-quality node | [IoT node](04-iot-node.qmd) |
+| Semantics | OWL 2 DL, aligned to SOSA/SSN and QUDT | [Ontology](05-ontology.qmd) |
+| Knowledge graph | 8,554 triples, schema derived from the data | [Knowledge graph](06-knowledge-graph.qmd) |
+| Query | Client-side SPARQL over the whole graph | [Explorer](07-explorer.qmd) |
+
+## The part that was actually hard
+
+Not the ontology. The drawing.
+
+The mains share a layer with the campus base map, the sheet carries two copies
+of the network, the diameter annotations are in four different notations, and
+the branch lines are drawn as separate polylines that stop short of the mains
+they connect to — 51 disconnected islands with a median gap of 31 m. A naive
+import produces something EPANET refuses to solve, and the failure mode is a
+bare `Error 110` with no indication that the cause is topological.
+
+Most of the engineering here is in getting from that drawing to a graph a
+solver will accept, without silently deleting the parts that do not fit.
+
+## Honest limits
+
+::: {.caveat}
+**The georeference is solved, not surveyed.** The CAD carries no CRS. The
+transform comes from optimising the network footprint against a digitised
+campus boundary — good to roughly 10–30 m, which is adequate for sampling a
+30 m DEM and not adequate for anything else.
+
+**Elevations are FABDEM at 30 m**, so nodes closer together than the posting
+share a value.
+
+**Pressures are modelled**, from a single steady-state run at a 2.5 peak factor,
+and inherit every assumption above.
+
+**48 island-bridging pipes are not in the drawing.** They are the shortest
+connectors that make the network solvable, and they are reported on every run.
+:::

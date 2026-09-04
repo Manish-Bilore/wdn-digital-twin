@@ -1,0 +1,11 @@
+/*-- scss:defaults --*/
+$primary:       #1a73e8;
+$body-color:    #202124;
+$link-color:    #1a73e8;
+$font-family-sans-serif: "Inter", "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace:  "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+
+/*-- scss:rules --*/
+h1, h2, h3 { letter-spacing: -0.01em; }
+h2 { margin-top: 2.4rem; }
+.navbar { border-bottom: 1px solid #e4e7ea; }

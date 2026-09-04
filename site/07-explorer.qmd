@@ -1,0 +1,73 @@
+---
+title: "Explorer"
+subtitle: "Live SPARQL over the water distribution knowledge graph"
+page-layout: full
+toc: false
+---
+
+```{=html}
+<link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+```
+
+Three panes over one selection. Click a node on the map and the graph expands
+around it while the query rewrites itself; run a query and any node it returns
+is ringed back on the map. The triples are parsed in your browser — nothing is
+pre-computed and nothing is fetched from a server.
+
+```{=html}
+<div class="wdn-explorer">
+
+  <div id="wdn-map"></div>
+
+  <div class="wdn-query">
+    <div class="wdn-bar">
+      <select id="preset" aria-label="Preset query"></select>
+      <button id="run-query" disabled>Run</button>
+    </div>
+    <div class="wdn-status" id="wdn-status">Starting…</div>
+    <textarea id="query" spellcheck="false" aria-label="SPARQL query"></textarea>
+    <div class="wdn-bar">
+      <label style="font-size:12px;">
+        <input type="checkbox" id="toggle-dma"> show DMA zones
+      </label>
+      <span class="muted" id="hit-count" style="font-size:12px;"></span>
+    </div>
+    <div id="results"><p class="muted">Ctrl/Cmd + Enter also runs the query.</p></div>
+    <div class="sel-card">
+      <strong>Selected:</strong> <span id="sel-node">— click a node —</span>
+      <div id="sel-table" class="kv-grid"></div>
+      <p class="muted" id="sel-reason" style="margin:6px 0 0;"></p>
+    </div>
+  </div>
+
+  <div id="wdn-graph"></div>
+</div>
+
+<script type="module" src="assets/explorer.js"></script>
+```
+
+## What the presets demonstrate
+
+**Sensors on dead ends** joins three things that live in different places in a
+conventional workflow — the sensor deployment, the network topology, and the
+EPANET result — in one graph pattern.
+
+**All four criteria satisfied** counts reified placement criteria per node.
+The overlay filter is not hard-coded anywhere in the query; it is data.
+
+**Unmonitored large mains** is the gap analysis: mains at 200 mm and above with
+no monitoring station at their start node.
+
+**Provisioning check** returns zero rows, and that is the passing result. It
+asks for stations hosting a temperature-compensated sensor but no temperature
+sensor. Every station has a DS18B20, so nothing comes back. Drop the probe from
+a future deployment and this query surfaces it.
+
+::: {.caveat}
+The graph carries modelled state, not measurements. Pressures come from an
+EPANET steady-state run at peak demand, on elevations sampled from a 30 m DEM
+and a georeference solved by footprint optimisation. Treat
+`wdn:modelledPressure` as what the model believes, not what a gauge would read.
+:::
