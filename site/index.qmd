@@ -20,13 +20,6 @@ A campus water network exists as five disconnected artefacts:
 5. a diagram of what those sensors measure
 
 Each is intelligible alone. None can answer a question that spans two of them.
-
-PLACEHOLDER
-the estate office, a hydraulic model on somebody's laptop, a spreadsheet of
-sensor locations, a firmware repository, and a diagram of what those sensors
-measure. Each is intelligible alone. None can answer a question that spans two
-of them.
-
 This connects all five — so questions like the one below become a query rather
 than a fortnight of cross-referencing.
 :::
