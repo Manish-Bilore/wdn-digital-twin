@@ -111,14 +111,15 @@ json.dump({"elements": els,
 ```
 
 ```{=html}
-<div id="schema-graph" style="height:560px;border:1px solid #e4e7ea;
-     border-radius:8px;background:#fbfbfc;"></div>
-<p class="muted" style="font-size:12px;margin-top:6px;">
-Node size follows instance count; edge thickness follows how often the pattern
-occurs. <span style="color:#1a73e8;font-weight:600;">Blue</span> = network,
-<span style="color:#2a9d8f;font-weight:600;">green</span> = sensing,
-<span style="color:#f4a261;font-weight:600;">orange</span> = placement.
-Drag to rearrange, scroll to zoom.</p>
+<div class="schema-toolbar">
+  <span class="lg"><i style="background:#1a73e8"></i>network</span>
+  <span class="lg"><i style="background:#2a9d8f"></i>sensing</span>
+  <span class="lg"><i style="background:#e8710a"></i>placement</span>
+  <span class="lg-note">circle size = instances &nbsp;·&nbsp; line weight = assertions</span>
+  <button id="schema-fit">Reset view</button>
+</div>
+<div id="schema-graph"></div>
+<p id="schema-detail" class="schema-detail"></p>
 <script src="assets/schema-graph.js"></script>
 ```
 

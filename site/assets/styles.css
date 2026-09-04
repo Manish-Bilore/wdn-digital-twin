@@ -82,3 +82,21 @@ table.res td{ padding:3px 8px 3px 0; border-bottom:1px solid #f1f3f4;
 #hero-results{ max-height:210px; overflow:auto; font-size:12px;
   border-top:1px solid var(--line); padding-top:8px; }
 .tablewrap{ overflow-x:auto; }
+
+/* ------------------------------------------------------ schema diagram --- */
+.schema-toolbar{ display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  margin:0 0 8px; font-size:12px; color:var(--muted); }
+.schema-toolbar .lg{ display:inline-flex; align-items:center; gap:6px;
+  font-weight:600; color:#3c4043; }
+.schema-toolbar .lg i{ width:11px; height:11px; border-radius:50%;
+  display:inline-block; }
+.schema-toolbar .lg-note{ margin-left:auto; }
+#schema-fit{ font-size:12px; padding:4px 12px; border:1px solid var(--line);
+  background:#fff; border-radius:6px; cursor:pointer; color:var(--muted); }
+#schema-fit:hover{ border-color:var(--accent); color:var(--accent); }
+#schema-graph{ height:640px; border:1px solid var(--line); border-radius:8px;
+  background:#fbfbfc; }
+.schema-detail{ font-size:12.5px; margin:8px 0 0; min-height:1.5em;
+  line-height:1.5; }
+.schema-detail code{ font-size:11.5px; background:#f1f3f4; padding:1px 5px;
+  border-radius:4px; color:#3c4043; }
