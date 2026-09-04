@@ -11,7 +11,17 @@ toc: false
 ```
 
 ::: {.hero-lede}
-A campus water network exists as five disconnected artefacts: a CAD drawing in
+A campus water network exists as five disconnected artefacts:
+
+1. a CAD drawing in the estate office
+2. a hydraulic model on somebody's laptop
+3. a spreadsheet of sensor locations
+4. a firmware repository
+5. a diagram of what those sensors measure
+
+Each is intelligible alone. None can answer a question that spans two of them.
+
+PLACEHOLDER
 the estate office, a hydraulic model on somebody's laptop, a spreadsheet of
 sensor locations, a firmware repository, and a diagram of what those sensors
 measure. Each is intelligible alone. None can answer a question that spans two
