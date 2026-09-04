@@ -8,13 +8,18 @@ toc: false
 ```{=html}
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
 ```
 
 Three panes over one selection. Click a node on the map and the graph expands
 around it while the query rewrites itself; run a query and any node it returns
 is ringed back on the map. The triples are parsed in your browser — nothing is
 pre-computed and nothing is fetched from a server.
+
+**The query box is editable.** Start from a preset or pick *Custom query*, then
+edit freely and press **Run** (or Ctrl/Cmd + Enter). The full SPARQL 1.1
+grammar is available — `SELECT`, `ASK`, `CONSTRUCT`, `DESCRIBE`, aggregates,
+property paths, `FILTER NOT EXISTS`. You are querying the whole graph, not a
+fixed result set.
 
 ```{=html}
 <div class="wdn-explorer">
@@ -23,7 +28,7 @@ pre-computed and nothing is fetched from a server.
 
   <div class="wdn-query">
     <div class="wdn-bar">
-      <select id="preset" aria-label="Preset query"></select>
+      <select id="preset" aria-label="Preset or custom query"></select>
       <button id="run-query" disabled>Run</button>
     </div>
     <div class="wdn-status" id="wdn-status">Starting…</div>
@@ -34,7 +39,8 @@ pre-computed and nothing is fetched from a server.
       </label>
       <span class="muted" id="hit-count" style="font-size:12px;"></span>
     </div>
-    <div id="results"><p class="muted">Ctrl/Cmd + Enter also runs the query.</p></div>
+    <div id="results"><p class="muted">Edit the query above and press Run.
+      Ctrl/Cmd + Enter works too.</p></div>
     <div class="sel-card">
       <strong>Selected:</strong> <span id="sel-node">— click a node —</span>
       <div id="sel-table" class="kv-grid"></div>

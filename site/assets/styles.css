@@ -9,9 +9,9 @@
   .wdn-explorer{ grid-template-columns:1fr;
     grid-template-areas:"map" "query" "graph"; }
 }
-#wdn-map{ grid-area:map; height:520px; border:1px solid var(--line);
+.wdn-explorer #wdn-map{ grid-area:map; height:520px; border:1px solid var(--line);
   border-radius:8px; overflow:hidden; }
-#wdn-graph{ grid-area:graph; height:300px; border:1px solid var(--line);
+.wdn-explorer #wdn-graph{ grid-area:graph; height:300px; border:1px solid var(--line);
   border-radius:8px; background:#fbfbfc; }
 .wdn-query{ grid-area:query; display:flex; flex-direction:column; gap:8px; }
 .wdn-query textarea{ width:100%; height:230px; font-family:var(--bs-font-monospace,
@@ -25,7 +25,7 @@
 .wdn-bar button:disabled{ background:#c8ccd0; cursor:not-allowed; }
 .wdn-status{ font-size:12px; color:var(--muted); }
 .wdn-status.ok{ color:var(--ok); } .wdn-status.err{ color:var(--err); }
-#results{ max-height:300px; overflow:auto; font-size:12px; }
+.wdn-query #results{ max-height:300px; overflow:auto; font-size:12px; }
 table.res{ width:100%; border-collapse:collapse; }
 table.res th{ text-align:left; font-weight:600; border-bottom:1px solid var(--line);
   padding:4px 8px 4px 0; position:sticky; top:0; background:#fff; }

@@ -12,6 +12,32 @@
  * evaluated live.
  * ========================================================================= */
 
+/* Cytoscape loader shared by the explorer and the knowledge-graph page.
+ *
+ * The <script src=".../cytoscape.min.js"> tag was silently failing, leaving
+ * window.cytoscape undefined and both graph panes blank. Loading the ES module
+ * directly from inside the script removes the dependency on a global being set
+ * by a tag we cannot see the result of, and falls back across CDNs. */
+async function loadCytoscape() {
+  if (window.cytoscape) return window.cytoscape;
+  const urls = [
+    "https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.esm.min.mjs",
+    "https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.esm.mjs",
+    "https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.esm.mjs",
+    "https://esm.sh/cytoscape@3.30.2",
+  ];
+  const tried = [];
+  for (const u of urls) {
+    try {
+      const m = await import(/* webpackIgnore: true */ u);
+      const cy = m.default || m.cytoscape || window.cytoscape;
+      if (typeof cy === "function") { window.cytoscape = cy; return cy; }
+      tried.push(u + " (no callable export)");
+    } catch (e) { tried.push(u + " (" + e.message + ")"); }
+  }
+  throw new Error("cytoscape unavailable — tried:\n" + tried.join("\n"));
+}
+
 const DATA = "data/";
 const NS = "https://w3id.org/iitb/wdn#";
 
@@ -41,11 +67,15 @@ ORDER BY ?pressure`,
 
   "All four criteria satisfied": `PREFIX wdn: <${NS}>
 
+# satisfiesCriterion is asserted on rationales too, so restrict to
+# things that are actually network nodes
 SELECT ?node (COUNT(DISTINCT ?c) AS ?criteria) WHERE {
-  ?node wdn:satisfiesCriterion ?c .
+  ?node wdn:satisfiesCriterion ?c ;
+        wdn:nodeIdentifier    ?id .
 }
 GROUP BY ?node
-HAVING (COUNT(DISTINCT ?c) = 4)`,
+HAVING (COUNT(DISTINCT ?c) = 4)
+ORDER BY ?node`,
 
   "Coverage per DMA": `PREFIX wdn: <${NS}>
 
@@ -289,15 +319,40 @@ SELECT ?predicate ?object WHERE {
 /* ------------------------------------------------------------- query pane -- */
 function initQueryUI() {
   const sel = document.getElementById("preset");
+  const custom = document.createElement("option");
+  custom.value = "__custom"; custom.textContent = "Custom query — write your own";
+  sel.appendChild(custom);
   Object.keys(PRESETS).forEach((k) => {
     const o = document.createElement("option");
     o.value = k; o.textContent = k; sel.appendChild(o);
   });
-  sel.addEventListener("change", () => setQuery(PRESETS[sel.value]));
+  sel.addEventListener("change", () => {
+    if (sel.value === "__custom") {
+      setQuery(`PREFIX wdn:  <${NS}>
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+# Your query. SELECT, ASK, CONSTRUCT and DESCRIBE all work.
+# Any wdn:J* or wdn:P* in the results is highlighted on the map.
+
+SELECT ?s ?p ?o WHERE {
+  ?s ?p ?o .
+}
+LIMIT 25`);
+      document.getElementById("query").focus();
+    } else {
+      setQuery(PRESETS[sel.value]);
+    }
+  });
   setQuery(PRESETS["Sensors on dead ends"]);
   document.getElementById("run-query").addEventListener("click", runQuery);
-  document.getElementById("query").addEventListener("keydown", (e) => {
+  const ta = document.getElementById("query");
+  ta.addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") runQuery();
+  });
+  ta.addEventListener("input", () => {
+    const s2 = document.getElementById("preset");
+    if (s2.value !== "__custom") s2.value = "__custom";
   });
 }
 
@@ -397,6 +452,7 @@ SELECT ?s ?p ?o WHERE {
 
   const container = document.getElementById("wdn-graph");
   if (!container) return;
+  loadCytoscape().then((cytoscape) => {
   if (state.cy) state.cy.destroy();
   state.cy = cytoscape({
     container,
@@ -419,6 +475,10 @@ SELECT ?s ?p ?o WHERE {
           "text-rotation": "autorotate" } },
     ],
     layout: { name: "cose", animate: false, padding: 18, nodeRepulsion: 9000 },
+  });
+  }).catch((e) => {
+    container.innerHTML = '<div style="padding:18px;font-size:12.5px;' +
+      'color:#c5221f;white-space:pre-wrap">' + e.message + "</div>";
   });
 }
 

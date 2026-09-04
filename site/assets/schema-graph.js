@@ -2,6 +2,32 @@
  * Data comes from data/schema.json, written by 05_export_web.py, rather than
  * being inlined into the page - a <script> tag emitted from a Quarto code
  * chunk is fragile, and a fetch is debuggable when it fails. */
+/* Cytoscape loader shared by the explorer and the knowledge-graph page.
+ *
+ * The <script src=".../cytoscape.min.js"> tag was silently failing, leaving
+ * window.cytoscape undefined and both graph panes blank. Loading the ES module
+ * directly from inside the script removes the dependency on a global being set
+ * by a tag we cannot see the result of, and falls back across CDNs. */
+async function loadCytoscape() {
+  if (window.cytoscape) return window.cytoscape;
+  const urls = [
+    "https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.esm.min.mjs",
+    "https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.esm.mjs",
+    "https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.esm.mjs",
+    "https://esm.sh/cytoscape@3.30.2",
+  ];
+  const tried = [];
+  for (const u of urls) {
+    try {
+      const m = await import(/* webpackIgnore: true */ u);
+      const cy = m.default || m.cytoscape || window.cytoscape;
+      if (typeof cy === "function") { window.cytoscape = cy; return cy; }
+      tried.push(u + " (no callable export)");
+    } catch (e) { tried.push(u + " (" + e.message + ")"); }
+  }
+  throw new Error("cytoscape unavailable — tried:\n" + tried.join("\n"));
+}
+
 (function () {
   var EL = "schema-graph";
 
@@ -51,23 +77,17 @@
     });
   }
 
-  function boot(tries) {
-    tries = tries || 0;
-    if (!window.cytoscape) {
-      if (tries > 60) return say("Cytoscape did not load from the CDN.", true);
-      return setTimeout(function () { boot(tries + 1); }, 100);
-    }
+  function boot() {
     if (!document.getElementById(EL)) return;
     say("Loading schema…");
-    fetch("data/schema.json")
+    loadCytoscape()
+      .then(function () { return fetch("data/schema.json"); })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
       .then(render)
-      .catch(function (e) {
-        say("Could not load data/schema.json (" + e.message + ").", true);
-      });
+      .catch(function (e) { say(e.message, true); });
   }
 
   if (document.readyState !== "loading") boot();

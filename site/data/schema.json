@@ -124,14 +124,23 @@
    "data": {
     "id": "e0",
     "source": "wdn:Pipe",
-    "target": "wdn:Junction",
-    "label": "wdn:endNode",
-    "n": 229
+    "target": "wdn:DeadEnd",
+    "label": "wdn:startNode",
+    "n": 40
    }
   },
   {
    "data": {
     "id": "e1",
+    "source": "wdn:DeadEnd",
+    "target": "wdn:WaterDistributionNetwork",
+    "label": "wdn:partOfNetwork",
+    "n": 133
+   }
+  },
+  {
+   "data": {
+    "id": "e2",
     "source": "wdn:Junction",
     "target": "wdn:TopologyCriterion",
     "label": "wdn:satisfiesCriterion",
@@ -140,52 +149,34 @@
   },
   {
    "data": {
-    "id": "e2",
+    "id": "e3",
     "source": "wdn:DeadEnd",
-    "target": "wdn:DistrictMeteredArea",
-    "label": "wdn:inDMA",
+    "target": "wdn:TopologyCriterion",
+    "label": "wdn:satisfiesCriterion",
     "n": 133
    }
   },
   {
    "data": {
-    "id": "e3",
-    "source": "wdn:MonitoringStation",
-    "target": "wdn:PlacementRationale",
-    "label": "wdn:hasRationale",
-    "n": 29
-   }
-  },
-  {
-   "data": {
     "id": "e4",
-    "source": "wdn:Junction",
+    "source": "wdn:Pipe",
     "target": "wdn:WaterDistributionNetwork",
     "label": "wdn:partOfNetwork",
-    "n": 142
+    "n": 322
    }
   },
   {
    "data": {
     "id": "e5",
-    "source": "wdn:Junction",
-    "target": "wdn:DistrictMeteredArea",
-    "label": "wdn:inDMA",
-    "n": 142
+    "source": "wdn:Pipe",
+    "target": "wdn:DeadEnd",
+    "label": "wdn:endNode",
+    "n": 93
    }
   },
   {
    "data": {
     "id": "e6",
-    "source": "wdn:TDSSensor",
-    "target": "wdn:TemperatureSensor",
-    "label": "wdn:compensatedBy",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e7",
     "source": "wdn:Pipe",
     "target": "wdn:PipeMaterial",
     "label": "wdn:hasMaterial",
@@ -194,34 +185,16 @@
   },
   {
    "data": {
+    "id": "e7",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:TemperatureSensor",
+    "label": "sosa:hosts",
+    "n": 29
+   }
+  },
+  {
+   "data": {
     "id": "e8",
-    "source": "wdn:DeadEnd",
-    "target": "wdn:WaterDistributionNetwork",
-    "label": "wdn:partOfNetwork",
-    "n": 133
-   }
-  },
-  {
-   "data": {
-    "id": "e9",
-    "source": "wdn:Pipe",
-    "target": "wdn:DeadEnd",
-    "label": "wdn:startNode",
-    "n": 40
-   }
-  },
-  {
-   "data": {
-    "id": "e10",
-    "source": "wdn:Pipe",
-    "target": "wdn:WaterDistributionNetwork",
-    "label": "wdn:partOfNetwork",
-    "n": 322
-   }
-  },
-  {
-   "data": {
-    "id": "e11",
     "source": "wdn:Pipe",
     "target": "wdn:Junction",
     "label": "wdn:startNode",
@@ -230,88 +203,7 @@
   },
   {
    "data": {
-    "id": "e12",
-    "source": "wdn:MonitoringStation",
-    "target": "wdn:DeadEnd",
-    "label": "wdn:deployedAt",
-    "n": 18
-   }
-  },
-  {
-   "data": {
-    "id": "e13",
-    "source": "wdn:DOSensor",
-    "target": "wdn:TemperatureSensor",
-    "label": "wdn:compensatedBy",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e14",
-    "source": "wdn:DeadEnd",
-    "target": "wdn:TopologyCriterion",
-    "label": "wdn:satisfiesCriterion",
-    "n": 133
-   }
-  },
-  {
-   "data": {
-    "id": "e15",
-    "source": "wdn:MonitoringStation",
-    "target": "wdn:DistrictMeteredArea",
-    "label": "wdn:inDMA",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e16",
-    "source": "wdn:PlacementRationale",
-    "target": "wdn:TopologyCriterion",
-    "label": "wdn:satisfiesCriterion",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e17",
-    "source": "wdn:MonitoringStation",
-    "target": "wdn:ORPSensor",
-    "label": "sosa:hosts",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e18",
-    "source": "wdn:TemperatureSensor",
-    "target": "sosa:ObservableProperty",
-    "label": "sosa:observes",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e19",
-    "source": "wdn:MonitoringStation",
-    "target": "wdn:TemperatureSensor",
-    "label": "sosa:hosts",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e20",
-    "source": "wdn:TDSSensor",
-    "target": "sosa:ObservableProperty",
-    "label": "sosa:observes",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e21",
+    "id": "e9",
     "source": "wdn:MonitoringStation",
     "target": "wdn:Junction",
     "label": "wdn:deployedAt",
@@ -320,7 +212,79 @@
   },
   {
    "data": {
-    "id": "e22",
+    "id": "e10",
+    "source": "wdn:DeadEnd",
+    "target": "wdn:DistrictMeteredArea",
+    "label": "wdn:inDMA",
+    "n": 133
+   }
+  },
+  {
+   "data": {
+    "id": "e11",
+    "source": "wdn:TDSSensor",
+    "target": "sosa:ObservableProperty",
+    "label": "sosa:observes",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e12",
+    "source": "wdn:Junction",
+    "target": "wdn:DistrictMeteredArea",
+    "label": "wdn:inDMA",
+    "n": 142
+   }
+  },
+  {
+   "data": {
+    "id": "e13",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:DeadEnd",
+    "label": "wdn:deployedAt",
+    "n": 18
+   }
+  },
+  {
+   "data": {
+    "id": "e14",
+    "source": "wdn:Pipe",
+    "target": "wdn:Junction",
+    "label": "wdn:endNode",
+    "n": 229
+   }
+  },
+  {
+   "data": {
+    "id": "e15",
+    "source": "wdn:DOSensor",
+    "target": "wdn:TemperatureSensor",
+    "label": "wdn:compensatedBy",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e16",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:PlacementRationale",
+    "label": "wdn:hasRationale",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e17",
+    "source": "wdn:Junction",
+    "target": "wdn:WaterDistributionNetwork",
+    "label": "wdn:partOfNetwork",
+    "n": 142
+   }
+  },
+  {
+   "data": {
+    "id": "e18",
     "source": "wdn:DOSensor",
     "target": "sosa:ObservableProperty",
     "label": "sosa:observes",
@@ -329,7 +293,25 @@
   },
   {
    "data": {
-    "id": "e23",
+    "id": "e19",
+    "source": "wdn:PHSensor",
+    "target": "wdn:TemperatureSensor",
+    "label": "wdn:compensatedBy",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e20",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:DeadEnd",
+    "label": "wdn:monitors",
+    "n": 18
+   }
+  },
+  {
+   "data": {
+    "id": "e21",
     "source": "wdn:PHSensor",
     "target": "sosa:ObservableProperty",
     "label": "sosa:observes",
@@ -338,11 +320,29 @@
   },
   {
    "data": {
+    "id": "e22",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:Junction",
+    "label": "wdn:monitors",
+    "n": 11
+   }
+  },
+  {
+   "data": {
+    "id": "e23",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:PHSensor",
+    "label": "sosa:hosts",
+    "n": 29
+   }
+  },
+  {
+   "data": {
     "id": "e24",
-    "source": "wdn:Pipe",
-    "target": "wdn:DeadEnd",
-    "label": "wdn:endNode",
-    "n": 93
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:TDSSensor",
+    "label": "sosa:hosts",
+    "n": 29
    }
   },
   {
@@ -358,32 +358,23 @@
    "data": {
     "id": "e26",
     "source": "wdn:MonitoringStation",
-    "target": "wdn:TDSSensor",
-    "label": "sosa:hosts",
+    "target": "wdn:DistrictMeteredArea",
+    "label": "wdn:inDMA",
     "n": 29
    }
   },
   {
    "data": {
     "id": "e27",
-    "source": "wdn:MonitoringStation",
-    "target": "wdn:PHSensor",
-    "label": "sosa:hosts",
+    "source": "wdn:TemperatureSensor",
+    "target": "sosa:ObservableProperty",
+    "label": "sosa:observes",
     "n": 29
    }
   },
   {
    "data": {
     "id": "e28",
-    "source": "wdn:PHSensor",
-    "target": "wdn:TemperatureSensor",
-    "label": "wdn:compensatedBy",
-    "n": 29
-   }
-  },
-  {
-   "data": {
-    "id": "e29",
     "source": "wdn:MonitoringStation",
     "target": "wdn:DOSensor",
     "label": "sosa:hosts",
@@ -392,20 +383,29 @@
   },
   {
    "data": {
-    "id": "e30",
+    "id": "e29",
     "source": "wdn:MonitoringStation",
-    "target": "wdn:DeadEnd",
-    "label": "wdn:monitors",
-    "n": 18
+    "target": "wdn:ORPSensor",
+    "label": "sosa:hosts",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e30",
+    "source": "wdn:TDSSensor",
+    "target": "wdn:TemperatureSensor",
+    "label": "wdn:compensatedBy",
+    "n": 29
    }
   },
   {
    "data": {
     "id": "e31",
-    "source": "wdn:MonitoringStation",
-    "target": "wdn:Junction",
-    "label": "wdn:monitors",
-    "n": 11
+    "source": "wdn:PlacementRationale",
+    "target": "wdn:TopologyCriterion",
+    "label": "wdn:satisfiesCriterion",
+    "n": 29
    }
   },
   {
