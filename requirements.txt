@@ -1,14 +1,29 @@
-# pinned to a combination verified end-to-end on this pipeline
+# Verified end-to-end: CAD ingest -> EPANET -> placement -> ontology -> site.
+# Pinned because the pipeline depends on shapely 2.x, numpy 2.x and
+# geopandas 1.x APIs that changed recently.
+
+# geospatial
 geopandas==1.1.4
 shapely==2.1.2
 pyogrio==0.13.0
 pyproj==3.7.2
 rasterio==1.5.1
+
+# analysis
+numpy==2.5.2
+pandas==3.0.5
 scipy==1.18.1
 scikit-learn==1.9.0
-pandas==3.0.5
-numpy==2.5.2
 matplotlib==3.11.1
-PyYAML==6.0.3
+
+# hydraulics (bundles the EPANET 2.2 engine)
 wntr==1.5.0
+
+# semantics
 rdflib==7.6.0
+
+# config
+PyYAML==6.0.3
+
+# required by `quarto render` to execute the {python} chunks in site/*.qmd
+jupyter==1.1.1

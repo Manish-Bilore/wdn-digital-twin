@@ -77,5 +77,5 @@ placement:
 ontology:
   emit: true
   namespace: "https://w3id.org/iitb/wdn#"
-  tbox_path: code/wdn_sensor_ontology.ttl
+  tbox_path: pipeline/wdn_sensor_ontology.ttl
   sensor_suite: [pH, TDS, ORP, DO, Temperature]
