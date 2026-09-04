@@ -1,11 +1,11 @@
 # An ontology-driven digital water distribution network
 
 The IIT Bombay campus water network, connected end to end: an estate-office
-AutoCAD drawing, an EPANET 2.2 hydraulic model, an optimised water-quality
+AutoCAD drawing amping the existing water distribution network, an EPANET 2.2 hydraulic model generated on top of it, an optimised water-quality
 sensor layout, the IoT hardware that would sit at those locations, and an OWL
-knowledge graph that ties all of it together — with live SPARQL in the browser.
+knowledge graph that ties all of it together, with live SPARQL in the browser.
 
-**[Open the site →](https://manish-bilore.github.io/wdn-digital-twin/)**
+**[Open the site](https://manish-bilore.github.io/wdn-digital-twin/)**
 
 | | |
 |---|---|
