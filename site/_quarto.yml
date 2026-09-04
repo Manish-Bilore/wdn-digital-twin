@@ -10,8 +10,8 @@ website:
     An ontology-driven digital twin of the IIT Bombay water distribution
     network: CAD to EPANET to optimal sensor placement to a queryable
     OWL knowledge graph.
-  site-url: "https://manishbilore.github.io/wdn-digital-twin/"
-  repo-url: "https://github.com/manishbilore/wdn-digital-twin"
+  site-url: "https://manish-bilore.github.io/wdn-digital-twin/"
+  repo-url: "https://github.com/Manish-Bilore/wdn-digital-twin"
   repo-actions: [source, issue]
   favicon: assets/favicon.svg
   open-graph: true
@@ -39,7 +39,7 @@ website:
         text: Reproduce
     right:
       - icon: github
-        href: https://github.com/manishbilore/wdn-digital-twin
+        href: https://github.com/Manish-Bilore/wdn-digital-twin
   page-footer:
     left: |
       Network digitised from an IIT Bombay ESTATE office AutoCAD drawing.

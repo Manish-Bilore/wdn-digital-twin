@@ -5,7 +5,7 @@ AutoCAD drawing, an EPANET 2.2 hydraulic model, an optimised water-quality
 sensor layout, the IoT hardware that would sit at those locations, and an OWL
 knowledge graph that ties all of it together — with live SPARQL in the browser.
 
-**[Open the site →](https://manishbilore.github.io/wdn-digital-twin/)**
+**[Open the site →](https://manish-bilore.github.io/wdn-digital-twin/)**
 
 | | |
 |---|---|
