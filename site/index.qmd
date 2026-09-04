@@ -1,6 +1,6 @@
 ---
 title: "An ontology-driven digital water distribution network"
-subtitle: "IIT Bombay campus — from an AutoCAD drawing to a queryable knowledge graph"
+subtitle: "IIT Bombay campus: from an 2D CAD drawing to a queryable knowledge graph"
 toc: false
 ---
 
@@ -24,17 +24,21 @@ for n, l in cells:
 print('</div>')
 ```
 
-A campus water network exists as five disconnected artefacts: a CAD drawing in
-the estate office, a hydraulic model on someone's laptop, a spreadsheet of
-sensor locations, a firmware repository, and a diagram of what the sensors
-measure. Each is intelligible on its own. None of them can answer a question
+A campus water network exists as five disconnected artefacts: 
+1) a CAD drawing in the estate office
+2) a hydraulic model on someone's laptop
+3) a spreadsheet of sensor locations
+4) a firmware repository, and 
+5) a diagram of what the sensors measure
+
+Each is intelligible on its own. None of them can answer a question
 that spans two of them.
 
 This project connects all five. The result is a graph in which *"which pH
 sensors sit on dead ends where modelled pressure falls in the bottom fifth of
 their district?"* is a single query rather than a week of cross-referencing.
 
-[Open the explorer →](07-explorer.qmd){.btn .btn-primary}
+[Open the explorer](07-explorer.qmd){.btn .btn-primary}
 
 ## How it fits together
 
