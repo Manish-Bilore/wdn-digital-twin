@@ -1,8 +1,51 @@
 ---
 title: "An ontology-driven digital water distribution network"
-subtitle: "IIT Bombay campus: from an 2D CAD drawing to a queryable knowledge graph"
+subtitle: "IIT Bombay campus — from an AutoCAD drawing to a knowledge graph you can question"
+page-layout: full
 toc: false
 ---
+
+```{=html}
+<link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+```
+
+::: {.hero-lede}
+A campus water network exists as five disconnected artefacts: a CAD drawing in
+the estate office, a hydraulic model on somebody's laptop, a spreadsheet of
+sensor locations, a firmware repository, and a diagram of what those sensors
+measure. Each is intelligible alone. None can answer a question that spans two
+of them.
+
+This connects all five — so questions like the one below become a query rather
+than a fortnight of cross-referencing.
+:::
+
+```{=html}
+<div class="hero">
+  <div id="hero-map"></div>
+  <div class="hero-panel">
+    <div id="hero-tabs"></div>
+    <p class="hero-q" id="hero-question"></p>
+    <p class="hero-why" id="hero-why"></p>
+    <pre id="hero-sparql"></pre>
+    <div class="hero-actions">
+      <button id="hero-run" disabled>Run again</button>
+      <span class="wdn-status" id="hero-status">Starting the triplestore…</span>
+    </div>
+    <div id="hero-results"></div>
+  </div>
+</div>
+<script type="module" src="assets/hero.js"></script>
+```
+
+Every one of those questions is evaluated **in your browser**, against the whole
+graph, when you press the button. Nothing is pre-computed and there is no
+server: the model is small enough — about 26 kB of triples — that the query
+engine can be shipped to the reader instead of the other way round.
+
+[Open the full explorer](07-explorer.qmd){.btn .btn-primary} &nbsp;
+[See what is in the graph](06-knowledge-graph.qmd){.btn .btn-outline-secondary}
 
 ```{python}
 #| echo: false
@@ -10,37 +53,23 @@ toc: false
 import json
 m = json.load(open("data/manifest.json"))
 c = m["counts"]
-cells = [
-    (f"{c['pipes']}", "pipes"),
-    (f"{c['junctions']}", "junctions"),
-    (f"{c['pipe_length_km']} km", "of main"),
-    (f"{c['sensors']}", "sensor nodes"),
-    (f"{c['dmas']}", "district areas"),
-    (f"{c['triples']:,}", "triples"),
-]
+cells = [(f"{c['pipes']}", "pipes"), (f"{c['junctions']}", "junctions"),
+         (f"{c['pipe_length_km']} km", "of main"), (f"{c['sensors']}", "sensor nodes"),
+         (f"{c['dmas']}", "district areas"), (f"{c['triples']:,}", "triples")]
 print('<div class="statbar">')
 for n, l in cells:
     print(f'<div><div class="n">{n}</div><div class="l">{l}</div></div>')
 print('</div>')
 ```
 
-A campus water network exists as five disconnected artefacts: 
-1) a CAD drawing in the estate office
-2) a hydraulic model on someone's laptop
-3) a spreadsheet of sensor locations
-4) a firmware repository, and 
-5) a diagram of what the sensors measure
-
-Each is intelligible on its own. None of them can answer a question
-that spans two of them.
-
-This project connects all five. The result is a graph in which *"which pH
-sensors sit on dead ends where modelled pressure falls in the bottom fifth of
-their district?"* is a single query rather than a week of cross-referencing.
-
-[Open the explorer](07-explorer.qmd){.btn .btn-primary}
-
 ## How it fits together
+
+![](assets/architecture.svg){fig-alt="Nine-stage pipeline from CAD drawing to digital twin"}
+
+Each stage produces an artefact the next one consumes, and the last three turn
+those artefacts into something a machine can reason over. The numbers in that
+diagram are written by the pipeline, so they cannot drift from the run that
+produced this page.
 
 | Layer | Artefact | Section |
 |---|---|---|
@@ -57,28 +86,28 @@ their district?"* is a single query rather than a week of cross-referencing.
 Not the ontology. The drawing.
 
 The mains share a layer with the campus base map, the sheet carries two copies
-of the network, the diameter annotations are in four different notations, and
+of the network, the diameter annotations come in four different notations, and
 the branch lines are drawn as separate polylines that stop short of the mains
 they connect to — 51 disconnected islands with a median gap of 31 m. A naive
-import produces something EPANET refuses to solve, and the failure mode is a
-bare `Error 110` with no indication that the cause is topological.
+import produces something EPANET refuses to solve, and the failure is a bare
+`Error 110` with no hint that the cause is topological.
 
-Most of the engineering here is in getting from that drawing to a graph a
-solver will accept, without silently deleting the parts that do not fit.
+Most of the engineering here is getting from that drawing to a graph a solver
+will accept, without silently deleting the parts that do not fit.
 
 ## Honest limits
 
 ::: {.caveat}
 **The georeference is solved, not surveyed.** The CAD carries no CRS. The
-transform comes from optimising the network footprint against a digitised
-campus boundary — good to roughly 10–30 m, which is adequate for sampling a
-30 m DEM and not adequate for anything else.
+transform comes from optimising the network footprint against a digitised campus
+boundary — good to roughly 10–30 m, which is adequate for sampling a 30 m DEM
+and not adequate for anything else.
 
 **Elevations are FABDEM at 30 m**, so nodes closer together than the posting
 share a value.
 
-**Pressures are modelled**, from a single steady-state run at a 2.5 peak factor,
-and inherit every assumption above.
+**Pressures are modelled**, from one steady-state run at a 2.5 peak factor, and
+inherit every assumption above.
 
 **48 island-bridging pipes are not in the drawing.** They are the shortest
 connectors that make the network solvable, and they are reported on every run.

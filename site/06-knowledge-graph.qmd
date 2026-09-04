@@ -79,7 +79,6 @@ declared property is never used, it does not appear here.
 
 ```{python}
 #| echo: false
-#| output: asis
 schema = Counter()
 for s_, p, o in g:
     ps = sh(p)
@@ -92,64 +91,36 @@ LAYER = {
  "wdn:Bend":"network", "wdn:WaterDistributionNetwork":"network",
  "wdn:DistrictMeteredArea":"network", "wdn:PipeMaterial":"network",
  "wdn:MonitoringStation":"sensing", "sosa:ObservableProperty":"sensing",
- "wdn:SensorModel":"sensing",
- "wdn:PlacementRationale":"placement", "wdn:TopologyCriterion":"placement",
- "wdn:TerrainCriterion":"placement", "wdn:PressureCriterion":"placement",
- "wdn:DemandCriterion":"placement",
 }
 def layer(c):
     if c in LAYER: return LAYER[c]
     if "Sensor" in c: return "sensing"
-    if "Risk" in c or "Criterion" in c: return "placement"
+    if "Risk" in c or "Criterion" in c or "Rationale" in c: return "placement"
     return "network"
 
 counts = Counter(ntype.values())
-nodes = sorted({a for a,_,_ in schema} | {b for _,_,b in schema})
-els = [{"data":{"id":c,"label":c,"n":counts.get(c,0)},"classes":layer(c)} for c in nodes]
-for i,((a,p,b),n) in enumerate(schema.items()):
-    els.append({"data":{"id":f"e{i}","source":a,"target":b,"label":p,"n":n}})
-print('<div id="schema-graph" style="height:560px;border:1px solid #e4e7ea;'
-      'border-radius:8px;background:#fbfbfc;"></div>')
-print('<p class="muted" style="font-size:12px;margin-top:6px;">'
-      'Node size follows instance count; edge thickness follows how often the '
-      'pattern occurs. Blue = network, green = sensing, orange = placement. '
-      'Drag to rearrange.</p>')
-print(f'<script>window.SCHEMA={json.dumps(els)};</script>')
+nodes_ = sorted({a for a,_,_ in schema} | {b for _,_,b in schema})
+els = [{"data":{"id":c,"label":c,"n":int(counts.get(c,0))},"classes":layer(c)}
+       for c in nodes_]
+for i, ((a, p, b), n) in enumerate(schema.items()):
+    els.append({"data":{"id":f"e{i}","source":a,"target":b,
+                        "label":p,"n":int(n)}})
+json.dump({"elements": els,
+           "counts": {k:int(v) for k,v in counts.most_common()},
+           "maxN": int(max(counts.values()))},
+          open("data/schema.json","w"), indent=1)
 ```
 
 ```{=html}
-<script>
-(function(){
-  function draw(){
-    if(!window.cytoscape||!window.SCHEMA) return setTimeout(draw,120);
-    cytoscape({
-      container: document.getElementById("schema-graph"),
-      elements: window.SCHEMA,
-      style: [
-        {selector:"node", style:{
-          label:"data(label)", "font-size":9, color:"#202124",
-          "text-valign":"bottom", "text-margin-y":4,
-          width:"mapData(n, 0, 322, 16, 58)",
-          height:"mapData(n, 0, 322, 16, 58)",
-          "background-opacity":0.9}},
-        {selector:".network",  style:{"background-color":"#1a73e8"}},
-        {selector:".sensing",  style:{"background-color":"#2a9d8f"}},
-        {selector:".placement",style:{"background-color":"#f4a261"}},
-        {selector:"edge", style:{
-          label:"data(label)", "font-size":7.5, color:"#5f6368",
-          width:"mapData(n, 1, 322, 0.8, 5)",
-          "line-color":"#c8ccd0", "target-arrow-color":"#c8ccd0",
-          "target-arrow-shape":"triangle", "curve-style":"bezier",
-          "text-rotation":"autorotate", "text-background-color":"#fbfbfc",
-          "text-background-opacity":0.85, "text-background-padding":2}}
-      ],
-      layout:{name:"cose", animate:false, padding:30, nodeRepulsion:24000,
-              idealEdgeLength:130, nestingFactor:0.9}
-    });
-  }
-  draw();
-})();
-</script>
+<div id="schema-graph" style="height:560px;border:1px solid #e4e7ea;
+     border-radius:8px;background:#fbfbfc;"></div>
+<p class="muted" style="font-size:12px;margin-top:6px;">
+Node size follows instance count; edge thickness follows how often the pattern
+occurs. <span style="color:#1a73e8;font-weight:600;">Blue</span> = network,
+<span style="color:#2a9d8f;font-weight:600;">green</span> = sensing,
+<span style="color:#f4a261;font-weight:600;">orange</span> = placement.
+Drag to rearrange, scroll to zoom.</p>
+<script src="assets/schema-graph.js"></script>
 ```
 
 ## What is in it

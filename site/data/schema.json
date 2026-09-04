@@ -1,0 +1,443 @@
+{
+ "elements": [
+  {
+   "data": {
+    "id": "sosa:ObservableProperty",
+    "label": "sosa:ObservableProperty",
+    "n": 8
+   },
+   "classes": "sensing"
+  },
+  {
+   "data": {
+    "id": "wdn:DOSensor",
+    "label": "wdn:DOSensor",
+    "n": 29
+   },
+   "classes": "sensing"
+  },
+  {
+   "data": {
+    "id": "wdn:DeadEnd",
+    "label": "wdn:DeadEnd",
+    "n": 133
+   },
+   "classes": "network"
+  },
+  {
+   "data": {
+    "id": "wdn:DistrictMeteredArea",
+    "label": "wdn:DistrictMeteredArea",
+    "n": 5
+   },
+   "classes": "network"
+  },
+  {
+   "data": {
+    "id": "wdn:Junction",
+    "label": "wdn:Junction",
+    "n": 142
+   },
+   "classes": "network"
+  },
+  {
+   "data": {
+    "id": "wdn:MonitoringStation",
+    "label": "wdn:MonitoringStation",
+    "n": 29
+   },
+   "classes": "sensing"
+  },
+  {
+   "data": {
+    "id": "wdn:ORPSensor",
+    "label": "wdn:ORPSensor",
+    "n": 29
+   },
+   "classes": "sensing"
+  },
+  {
+   "data": {
+    "id": "wdn:PHSensor",
+    "label": "wdn:PHSensor",
+    "n": 29
+   },
+   "classes": "sensing"
+  },
+  {
+   "data": {
+    "id": "wdn:Pipe",
+    "label": "wdn:Pipe",
+    "n": 322
+   },
+   "classes": "network"
+  },
+  {
+   "data": {
+    "id": "wdn:PipeMaterial",
+    "label": "wdn:PipeMaterial",
+    "n": 4
+   },
+   "classes": "network"
+  },
+  {
+   "data": {
+    "id": "wdn:PlacementRationale",
+    "label": "wdn:PlacementRationale",
+    "n": 29
+   },
+   "classes": "placement"
+  },
+  {
+   "data": {
+    "id": "wdn:TDSSensor",
+    "label": "wdn:TDSSensor",
+    "n": 29
+   },
+   "classes": "sensing"
+  },
+  {
+   "data": {
+    "id": "wdn:TemperatureSensor",
+    "label": "wdn:TemperatureSensor",
+    "n": 29
+   },
+   "classes": "sensing"
+  },
+  {
+   "data": {
+    "id": "wdn:TopologyCriterion",
+    "label": "wdn:TopologyCriterion",
+    "n": 1
+   },
+   "classes": "placement"
+  },
+  {
+   "data": {
+    "id": "wdn:WaterDistributionNetwork",
+    "label": "wdn:WaterDistributionNetwork",
+    "n": 1
+   },
+   "classes": "network"
+  },
+  {
+   "data": {
+    "id": "e0",
+    "source": "wdn:Pipe",
+    "target": "wdn:Junction",
+    "label": "wdn:endNode",
+    "n": 229
+   }
+  },
+  {
+   "data": {
+    "id": "e1",
+    "source": "wdn:Junction",
+    "target": "wdn:TopologyCriterion",
+    "label": "wdn:satisfiesCriterion",
+    "n": 142
+   }
+  },
+  {
+   "data": {
+    "id": "e2",
+    "source": "wdn:DeadEnd",
+    "target": "wdn:DistrictMeteredArea",
+    "label": "wdn:inDMA",
+    "n": 133
+   }
+  },
+  {
+   "data": {
+    "id": "e3",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:PlacementRationale",
+    "label": "wdn:hasRationale",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e4",
+    "source": "wdn:Junction",
+    "target": "wdn:WaterDistributionNetwork",
+    "label": "wdn:partOfNetwork",
+    "n": 142
+   }
+  },
+  {
+   "data": {
+    "id": "e5",
+    "source": "wdn:Junction",
+    "target": "wdn:DistrictMeteredArea",
+    "label": "wdn:inDMA",
+    "n": 142
+   }
+  },
+  {
+   "data": {
+    "id": "e6",
+    "source": "wdn:TDSSensor",
+    "target": "wdn:TemperatureSensor",
+    "label": "wdn:compensatedBy",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e7",
+    "source": "wdn:Pipe",
+    "target": "wdn:PipeMaterial",
+    "label": "wdn:hasMaterial",
+    "n": 322
+   }
+  },
+  {
+   "data": {
+    "id": "e8",
+    "source": "wdn:DeadEnd",
+    "target": "wdn:WaterDistributionNetwork",
+    "label": "wdn:partOfNetwork",
+    "n": 133
+   }
+  },
+  {
+   "data": {
+    "id": "e9",
+    "source": "wdn:Pipe",
+    "target": "wdn:DeadEnd",
+    "label": "wdn:startNode",
+    "n": 40
+   }
+  },
+  {
+   "data": {
+    "id": "e10",
+    "source": "wdn:Pipe",
+    "target": "wdn:WaterDistributionNetwork",
+    "label": "wdn:partOfNetwork",
+    "n": 322
+   }
+  },
+  {
+   "data": {
+    "id": "e11",
+    "source": "wdn:Pipe",
+    "target": "wdn:Junction",
+    "label": "wdn:startNode",
+    "n": 282
+   }
+  },
+  {
+   "data": {
+    "id": "e12",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:DeadEnd",
+    "label": "wdn:deployedAt",
+    "n": 18
+   }
+  },
+  {
+   "data": {
+    "id": "e13",
+    "source": "wdn:DOSensor",
+    "target": "wdn:TemperatureSensor",
+    "label": "wdn:compensatedBy",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e14",
+    "source": "wdn:DeadEnd",
+    "target": "wdn:TopologyCriterion",
+    "label": "wdn:satisfiesCriterion",
+    "n": 133
+   }
+  },
+  {
+   "data": {
+    "id": "e15",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:DistrictMeteredArea",
+    "label": "wdn:inDMA",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e16",
+    "source": "wdn:PlacementRationale",
+    "target": "wdn:TopologyCriterion",
+    "label": "wdn:satisfiesCriterion",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e17",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:ORPSensor",
+    "label": "sosa:hosts",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e18",
+    "source": "wdn:TemperatureSensor",
+    "target": "sosa:ObservableProperty",
+    "label": "sosa:observes",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e19",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:TemperatureSensor",
+    "label": "sosa:hosts",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e20",
+    "source": "wdn:TDSSensor",
+    "target": "sosa:ObservableProperty",
+    "label": "sosa:observes",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e21",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:Junction",
+    "label": "wdn:deployedAt",
+    "n": 11
+   }
+  },
+  {
+   "data": {
+    "id": "e22",
+    "source": "wdn:DOSensor",
+    "target": "sosa:ObservableProperty",
+    "label": "sosa:observes",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e23",
+    "source": "wdn:PHSensor",
+    "target": "sosa:ObservableProperty",
+    "label": "sosa:observes",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e24",
+    "source": "wdn:Pipe",
+    "target": "wdn:DeadEnd",
+    "label": "wdn:endNode",
+    "n": 93
+   }
+  },
+  {
+   "data": {
+    "id": "e25",
+    "source": "wdn:ORPSensor",
+    "target": "sosa:ObservableProperty",
+    "label": "sosa:observes",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e26",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:TDSSensor",
+    "label": "sosa:hosts",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e27",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:PHSensor",
+    "label": "sosa:hosts",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e28",
+    "source": "wdn:PHSensor",
+    "target": "wdn:TemperatureSensor",
+    "label": "wdn:compensatedBy",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e29",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:DOSensor",
+    "label": "sosa:hosts",
+    "n": 29
+   }
+  },
+  {
+   "data": {
+    "id": "e30",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:DeadEnd",
+    "label": "wdn:monitors",
+    "n": 18
+   }
+  },
+  {
+   "data": {
+    "id": "e31",
+    "source": "wdn:MonitoringStation",
+    "target": "wdn:Junction",
+    "label": "wdn:monitors",
+    "n": 11
+   }
+  },
+  {
+   "data": {
+    "id": "e32",
+    "source": "wdn:DistrictMeteredArea",
+    "target": "wdn:WaterDistributionNetwork",
+    "label": "wdn:partOfNetwork",
+    "n": 5
+   }
+  }
+ ],
+ "counts": {
+  "wdn:Pipe": 322,
+  "wdn:Junction": 142,
+  "wdn:DeadEnd": 133,
+  "wdn:MonitoringStation": 29,
+  "wdn:PlacementRationale": 29,
+  "wdn:DOSensor": 29,
+  "wdn:ORPSensor": 29,
+  "wdn:TDSSensor": 29,
+  "wdn:PHSensor": 29,
+  "wdn:TemperatureSensor": 29,
+  "sosa:ObservableProperty": 8,
+  "wdn:SensorModel": 5,
+  "wdn:DistrictMeteredArea": 5,
+  "wdn:PipeMaterial": 4,
+  "wdn:TerrainCriterion": 1,
+  "wdn:PressureCriterion": 1,
+  "wdn:DemandCriterion": 1,
+  "wdn:TopologyCriterion": 1,
+  "wdn:WaterDistributionNetwork": 1
+ },
+ "maxN": 322
+}

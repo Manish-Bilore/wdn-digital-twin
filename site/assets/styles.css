@@ -48,3 +48,37 @@ table.res td{ padding:3px 8px 3px 0; border-bottom:1px solid #f1f3f4;
   letter-spacing:0.04em; }
 .caveat{ border-left:3px solid #f4a261; background:#fffaf4; padding:10px 14px;
   font-size:13.5px; border-radius:0 6px 6px 0; margin:1rem 0; }
+
+/* ---------------------------------------------------------------- hero --- */
+.hero-lede{ font-size:17.5px; line-height:1.55; color:#3c4043; max-width:64ch;
+  margin:0 0 1.4rem; }
+.hero{ display:grid; gap:16px; grid-template-columns:1.1fr 1fr;
+  grid-template-areas:"map panel"; margin:0 0 2rem; }
+@media (max-width:980px){
+  .hero{ grid-template-columns:1fr; grid-template-areas:"panel" "map"; }
+}
+#hero-map{ grid-area:map; height:460px; border:1px solid var(--line);
+  border-radius:10px; overflow:hidden; }
+.hero-panel{ grid-area:panel; display:flex; flex-direction:column; gap:10px; }
+#hero-tabs{ display:flex; flex-wrap:wrap; gap:6px; }
+.qtab{ font-size:12px; padding:5px 11px; border:1px solid var(--line);
+  background:#fff; border-radius:999px; cursor:pointer; color:var(--muted);
+  transition:all .12s; }
+.qtab:hover{ border-color:var(--accent); color:var(--accent); }
+.qtab.on{ background:var(--accent); border-color:var(--accent); color:#fff;
+  font-weight:600; }
+.hero-q{ font-size:19px; line-height:1.4; font-weight:600; color:#202124;
+  margin:4px 0 0; }
+.hero-why{ font-size:13px; color:var(--muted); line-height:1.5; margin:0; }
+#hero-sparql{ font-family:ui-monospace,Menlo,monospace; font-size:11px;
+  line-height:1.45; background:#f6f8fa; border:1px solid var(--line);
+  border-radius:8px; padding:10px 12px; overflow:auto; max-height:190px;
+  white-space:pre; color:#24292f; margin:0; }
+.hero-actions{ display:flex; gap:10px; align-items:center; }
+#hero-run{ padding:7px 20px; font-size:13.5px; font-weight:600;
+  background:var(--accent); color:#fff; border:0; border-radius:7px;
+  cursor:pointer; }
+#hero-run:disabled{ background:#c8ccd0; cursor:not-allowed; }
+#hero-results{ max-height:210px; overflow:auto; font-size:12px;
+  border-top:1px solid var(--line); padding-top:8px; }
+.tablewrap{ overflow-x:auto; }
