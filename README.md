@@ -36,10 +36,10 @@ python pipeline/scripts/05_export_web.py -o outputs -s site
 quarto render site
 ```
 
-## Honest limits
+## Limitations
 
 The georeference is solved by footprint optimisation against a digitised
-boundary, not surveyed — roughly 10–30 m. Elevations are FABDEM at 30 m
+boundary, not surveyed, roughly 10–30 m. Elevations are FABDEM at 30 m
 posting. Pressures are modelled from one steady-state run and inherit both.
 48 island-bridging pipes are not in the original drawing; they are the shortest
 connectors that make the network solvable and are reported on every run.
