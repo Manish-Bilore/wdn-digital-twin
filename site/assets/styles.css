@@ -49,6 +49,13 @@ table.res td{ padding:3px 8px 3px 0; border-bottom:1px solid #f1f3f4;
 .caveat{ border-left:3px solid #f4a261; background:#fffaf4; padding:10px 14px;
   font-size:13.5px; border-radius:0 6px 6px 0; margin:1rem 0; }
 
+/* Limitations: plain prose, no highlight and no rule. The content is meant to
+   be read as part of the argument, not flagged as an aside. */
+.limits{ font-size:14px; line-height:1.6; margin:1rem 0 0; padding:0;
+  background:none; border:0; }
+.limits p{ margin:0 0 0.85rem; }
+.limits strong{ color:#202124; font-weight:600; }
+
 /* ---------------------------------------------------------------- hero --- */
 .hero-lede{ font-size:17.5px; line-height:1.55; color:#3c4043; max-width:64ch;
   margin:0 0 1.4rem; }

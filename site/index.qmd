@@ -1,6 +1,6 @@
 ---
 title: "An ontology-driven digital water distribution network"
-subtitle: "IIT Bombay campus — from an AutoCAD drawing to a knowledge graph you can question"
+subtitle: "IIT Bombay campus: from a CAD drawing to a knowledge graph we can question"
 page-layout: full
 toc: false
 ---
@@ -13,14 +13,14 @@ toc: false
 ::: {.hero-lede}
 A campus water network exists as five disconnected artefacts:
 
-1. a CAD drawing in the estate office
-2. a hydraulic model on somebody's laptop
-3. a spreadsheet of sensor locations
-4. a firmware repository
-5. a diagram of what those sensors measure
+1. CAD drawing in the estate office
+2. hydraulic model
+3. spreadsheet of sensor locations
+4. firmware repository
+5. diagram of what those sensors measure
 
 Each is intelligible alone. None can answer a question that spans two of them.
-This connects all five — so questions like the one below become a query rather
+This connects all five, so questions like the one below become a query rather
 than a fortnight of cross-referencing.
 :::
 
@@ -84,23 +84,18 @@ produced this page.
 | Knowledge graph | 8,554 triples, schema derived from the data | [Knowledge graph](06-knowledge-graph.qmd) |
 | Query | Client-side SPARQL over the whole graph | [Explorer](07-explorer.qmd) |
 
-## The part that was actually hard
+## The hard part is the input drawing
 
-Not the ontology. The drawing.
+A naive import produces something EPANET refuses to solve, and the failure is a
+bare `Error 110` with no hint that the cause is topological.
 
-The mains share a layer with the campus base map, the sheet carries two copies
-of the network, the diameter annotations come in four different notations, and
-the branch lines are drawn as separate polylines that stop short of the mains
-they connect to — 51 disconnected islands with a median gap of 31 m. A naive
-import produces something EPANET refuses to solve, and the failure is a bare
-`Error 110` with no hint that the cause is topological.
+Most of the engineering here is getting from a messy drawing — wild
+annotations, missing polylines and connections — to a graph a solver will
+accept, without silently deleting the parts that do not fit.
 
-Most of the engineering here is getting from that drawing to a graph a solver
-will accept, without silently deleting the parts that do not fit.
+## Limitations
 
-## Honest limits
-
-::: {.caveat}
+::: {.limits}
 **The georeference is solved, not surveyed.** The CAD carries no CRS. The
 transform comes from optimising the network footprint against a digitised campus
 boundary — good to roughly 10–30 m, which is adequate for sampling a 30 m DEM
